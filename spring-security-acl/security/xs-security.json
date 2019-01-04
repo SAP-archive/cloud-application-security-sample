@@ -1,0 +1,37 @@
+{
+  "xsappname": "bulletinboard",
+  "description": "Bulletinboard application",
+  "tenant-mode": "shared",
+  "attributes": [
+    {
+      "name": "group",
+      "description": "Assignment to User groups, the user collaborates with",
+      "valueType" : "STRING"
+    },{
+      "name": "bulletinboard",
+      "description": "Bulletinboards, advertisements are published to",
+      "valueType" : "string"
+    },{
+      "name": "location",
+      "description": "Locations, advertisements are published to",
+      "valueType" : "string"
+    }
+  ],
+  "role-templates": [
+    {
+      "name": "BulletinboardAccessor",
+      "description": "View and add advertisements to a bulletinboard",
+      "attribute-references" : [ "bulletinboard" ]
+    },
+    {
+      "name": "BulletinboardInLocationAccessor",
+      "description": "View and add advertisements to all bulletinboards that belong to location",
+      "attribute-references" : [ "location" ]
+    },
+    {
+      "name": "GroupMember",
+      "description": "Groups people that likes to collaborate",
+      "attribute-references" : [ "group" ]
+    }
+  ]
+}

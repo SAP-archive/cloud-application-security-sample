@@ -1,0 +1,12 @@
+version: '3.2'
+
+services:
+  postgres: #https://hub.docker.com/_/postgres/
+    restart: always
+    image: postgres:9.6
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=testuser
+      - POSTGRES_DB=test
+      - POSTGRES_PASSWORD=test123!

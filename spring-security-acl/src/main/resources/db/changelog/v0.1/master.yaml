@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - include:
+      file: create-application-tables.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: create-acl-tables.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: populate-acl-tables.yaml
+      relativeToChangelogFile: true

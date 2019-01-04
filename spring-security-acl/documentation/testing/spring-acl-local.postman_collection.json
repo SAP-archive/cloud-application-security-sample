@@ -1,0 +1,329 @@
+{
+	"variables": [],
+	"info": {
+		"name": "CPApplicationSecurity",
+		"_postman_id": "a43cca87-f0c9-8b63-415e-5f634e226401",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "F4 /api/v1/attribute",
+			"request": {
+				"url": "http://localhost:8080/api/v1/attribute/",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"some\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/api/v1/ads/acl",
+			"request": {
+				"url": "http://localhost:8080/api/v1/ads/acl/",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "{{AUTH_advertiser}}",
+						"description": "advertiser"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"title\":\"test\",\n\t\"price\": \"40\",\n\t\"contact\": \"myemail\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/api/v1/ads/acl/{id}",
+			"request": {
+				"url": "http://localhost:8080/api/v1/ads/acl/{id}",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "{{AUTH_advertiser}}",
+						"description": "advertiser"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{AUTH_myfriend}}",
+						"description": "myfriend",
+						"disabled": true
+					},
+					{
+						"key": "Authorization",
+						"value": "{{AUTH_myTeamMember}}",
+						"description": "Group Member (xs.user.attributes... group=UG_MY_TEAM)",
+						"disabled": true
+					},
+					{
+						"key": "Authorization",
+						"value": "{{AUTH_viewer_DE_WDF03}}",
+						"description": "Board Viewer(xs.user.attributes... bulletinboard=DE_WDF03_Board)",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\":\"MY_GROUP_NAME\",\n\t\"permissions\":[\"READ\"]\n}"
+				},
+				"description": "Get"
+			},
+			"response": []
+		},
+		{
+			"name": "/api/v1/ads/acl/{id}",
+			"request": {
+				"url": "http://localhost:8080/api/v1/ads/acl/{id}",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "{{AUTH_myTeamMember}}",
+						"description": "Group Member (xs.user.attributes... group=UG_MY_TEAM)"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": {id},\n    \"title\": \"test\",\n    \"price\": 40,\n    \"contact\": \"myemail\",\n    \"isPublished\": false,\n    \"metadata\": {\n        \"createdAt\": \"2018-11-20T00:41:47.701+01:00\",\n        \"modifiedAt\": null,\n        \"createdBy\": \"adOwner\",\n        \"modifiedBy\": \"null\",\n        \"version\": 0\n    }\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/api/v1/ads/acl/grantPermissionsToUser/{id}",
+			"request": {
+				"url": "http://localhost:8080/api/v1/ads/acl/grantPermissionsToUser/{id}",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "{{AUTH_advertiser}}",
+						"description": "advertiser"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\":\"myfriend\",\n\t\"permissionCodes\":[\"R\", \"A\"]\n}"
+				},
+				"description": "Publish to Group, specify permission(s)"
+			},
+			"response": []
+		},
+		{
+			"name": "/api/v1/ads/acl/removePermissionsFromUser/{id}",
+			"request": {
+				"url": "http://localhost:8080/api/v1/ads/acl/removePermissionsFromUser/{id}",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "{{AUTH_advertiser}}",
+						"description": "advertiser"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\":\"myfriend\",\n\t\"permissionCodes\":[\"R\"]\n}"
+				},
+				"description": "Publish to Group, specify permission(s)"
+			},
+			"response": []
+		},
+		{
+			"name": "/api/v1/ads/acl/grantPermissionsToUserGroup/{id}",
+			"request": {
+				"url": "http://localhost:8080/api/v1/ads/acl/grantPermissionsToUserGroup/{id}",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "{{AUTH_advertiser}}",
+						"description": "advertiser"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\":\"UG_MY_TEAM\",\n\t\"permissionCodes\":[\"W\", \"R\"]\n}"
+				},
+				"description": "Publish to Group, specify permission(s)"
+			},
+			"response": []
+		},
+		{
+			"name": "/api/v1/ads/acl/my",
+			"request": {
+				"url": "http://localhost:8080/api/v1/ads/acl/my",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "{{AUTH_advertiser}}",
+						"description": "advertiser"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{AUTH_viewer_DE_WDF03}}",
+						"description": "Board Viewer(xs.user.attributes... board=DE_WDF03_Board)",
+						"disabled": true
+					},
+					{
+						"key": "Authorization",
+						"value": "{{AUTH_myTeamMember}}",
+						"description": "Group Member (xs.user.attributes... group=UG_MY_TEAM)",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\":\"MY_GROUP_NAME\",\n\t\"permissions\":[\"READ\"]\n}"
+				},
+				"description": "Get"
+			},
+			"response": []
+		},
+		{
+			"name": "/api/v1/ads/acl/publish/{id}",
+			"request": {
+				"url": "http://localhost:8080/api/v1/ads/acl/publish/{id}",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "{{AUTH_myfriend}}",
+						"description": "myfriend (permission=\"A\"(Admin), and bulletinboard=DE_WDF03_Board )"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\":\"DE_WDF03_Board\"\n}"
+				},
+				"description": "Publish to Group, specify permission(s)"
+			},
+			"response": []
+		},
+		{
+			"name": "/api/v1/ads/acl/published",
+			"request": {
+				"url": "http://localhost:8080/api/v1/ads/acl/published",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "{{AUTH_advertiser}}",
+						"description": "advertiser (xs.user.attributes... location=DE)"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{AUTH_viewer_DE_WDF03}}",
+						"description": "Board Viewer(xs.user.attributes... bulletinboard=DE_WDF03_Board)",
+						"disabled": true
+					},
+					{
+						"key": "Authorization",
+						"value": "{{AUTH_myTeamMember}}",
+						"description": "Group Member (xs.user.attributes... group=UG_MY_TEAM)",
+						"disabled": true
+					},
+					{
+						"key": "Authorization",
+						"value": "",
+						"description": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\":\"MY_GROUP_NAME\",\n\t\"permissions\":[\"READ\"]\n}"
+				},
+				"description": "Get"
+			},
+			"response": []
+		},
+		{
+			"name": "/api/v1/ads/acl/my/pages/{pageNumber}",
+			"request": {
+				"url": "http://localhost:8080/api/v1/ads/acl/my/pages/0",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "{{AUTH_advertiser}}",
+						"description": "advertiser"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{AUTH_myfriend}}",
+						"description": "myfriend",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\":\"MY_GROUP_NAME\",\n\t\"permissions\":[\"READ\"]\n}"
+				},
+				"description": "Get"
+			},
+			"response": []
+		}
+	]
+}

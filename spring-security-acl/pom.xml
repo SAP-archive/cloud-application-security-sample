@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.sap.cloud.security.xsuaa</groupId>
+    <artifactId>demo-application-security-acl</artifactId>
+    <packaging>jar</packaging>
+
+    <name>demo-application-security-acl</name>
+    <description>Demo project for Spring Boot using Spring Security ACL. It integrates to SAP Cloud Platform XSUAA
+        service using the Java Client Security Library offered by SAP.
+    </description>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.1.0.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <!-- https://repo.spring.io/libs-snapshot/ -->
+    <repositories>
+        <repository>
+            <id>spring-snapshot-repo</id>
+            <name>Spring Snapshot Repository</name>
+            <url>https://repo.spring.io/libs-snapshot/</url>
+        </repository>
+    </repositories>
+
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>1.8</java.version>
+        <!-- wait for 5.2.0.M1 planned for january 15th-->
+        <spring.security.version>5.2.0.BUILD-SNAPSHOT</spring.security.version> <!-- spring-security-acl-5.2.0.BUILD-20181109.180203-56.jar-->
+        <sap.cloud.security.version>1.2.0</sap.cloud.security.version>
+        <jackson.version>2.9.8</jackson.version> <!-- vulas -->
+    </properties>
+
+    <dependencies>
+        <!-- Spring Boot starter packages -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cloud-connectors</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- Database driver -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- Spring and XSUAA Security -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sap.cloud.security.xsuaa</groupId>
+            <artifactId>api</artifactId>
+            <version>${sap.cloud.security.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sap.cloud.security.xsuaa</groupId>
+            <artifactId>spring-xsuaa</artifactId>
+            <version>${sap.cloud.security.version}</version>
+        </dependency>
+        <dependency> <!-- JWT decoder -->
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-jose</artifactId>
+            <version>${spring.security.version}</version>
+        </dependency>
+        <dependency> <!-- Mock WebServer for offline Token validation-->
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-resource-server</artifactId>
+            <version>${spring.security.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>mockwebserver</artifactId>
+            <version>3.9.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.bouncycastle</groupId>
+                    <artifactId>bcprov-jdk15on</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- Spring Security ACL -->
+        <!-- use liquibase to setup acl schema (see here: https://docs.spring.io/autorepo/docs/spring-security/5.0.x/reference/html/appendix-schema.html) -->
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+            <version>3.6.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-acl</artifactId>
+            <version>${spring.security.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache-core</artifactId>
+            <version>2.6.11</version>
+        </dependency>
+
+        <!-- dependencies for test -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <version>${spring.security.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-jwt</artifactId>
+            <version>1.0.9.RELEASE</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>findbugs</artifactId>
+            <version>3.0.1</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>${project.artifactId}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+                <version>3.0.2</version>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>findbugs</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>3.5</version>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>pmd</goal>
+                            <goal>cpd</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.18.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.7.5.201505241946</version>
+                <executions>
+                    <execution>
+                        <id>default-prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>default-report</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>default-check</id>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    <profiles>
+        <profile>
+            <id>vulas</id>
+            <activation>
+                <property>
+                    <name>vulas</name>
+                </property>
+            </activation>
+            <properties>
+                <vulas.version>3.0.12</vulas.version>
+                <vulas.shared.backend.serviceUrl>http://vulas.mo.sap.corp:8080/backend</vulas.shared.backend.serviceUrl>
+                <vulas.core.space.token>404AAE61F45324F3E9B51FF75923C5F4</vulas.core.space.token>
+                <vulas.core.appContext.group>${project.groupId}</vulas.core.appContext.group>
+                <vulas.core.appContext.artifact>${project.artifactId}</vulas.core.appContext.artifact>
+                <vulas.core.appContext.version>${project.version}</vulas.core.appContext.version>
+            </properties>
+            <build>
+                <plugins>
+
+                    <!-- Copies Vulas JARs to ${project.build.directory}/vulas/lib and incl,
+                        which is needed for the instrumentation of JUnit tests. -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>2.10</version>
+                        <executions>
+                            <execution>
+                                <id>copy-vulas</id>
+                                <phase>generate-test-resources</phase>
+                                <goals>
+                                    <goal>copy</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>com.sap.research.security.vulas</groupId>
+                                            <artifactId>lang-java</artifactId>
+                                            <version>${vulas.version}</version>
+                                            <type>jar</type>
+                                            <classifier>jar-with-dependencies</classifier>
+                                            <outputDirectory>${project.build.directory}/vulas/lib</outputDirectory>
+                                            <destFileName>vulas-core-latest-jar-with-dependencies.jar</destFileName>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>com.sap.research.security.vulas</groupId>
+                                            <artifactId>lang-java</artifactId>
+                                            <version>${vulas.version}</version>
+                                            <type>jar</type>
+                                            <classifier>jar-with-dependencies</classifier>
+                                            <outputDirectory>${project.build.directory}/vulas/include</outputDirectory>
+                                            <destFileName>vulas-core-latest-jar-with-dependencies.jar</destFileName>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- Registers the Vulas agent at JVM startup (and specifies a couple of configuration settings) -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>2.21.0</version>
+                        <configuration>
+                            <!-- If set to 0, no separate JVM process will be spawned, i.e., one
+                                can use mvnDebug and JVM params can be added to the Maven (rather than putting
+                                them in the Surefire plugin configuration) (default: 1) -->
+                            <forkCount>1</forkCount>
+
+                            <!-- Kill the forked test process after a certain number of seconds.
+                                If set to 0, wait forever for the process, never timing out. This allows
+                                Vulas to (hopefully) upload all info in its shutdown hook. More info: https://maven.apache.org/surefire/maven-surefire-plugin/test-mojo.html,
+                                https://maven.apache.org/surefire/maven-surefire-plugin/examples/shutdown.html -->
+                            <forkedProcessTimeoutInSeconds>0</forkedProcessTimeoutInSeconds>
+
+                            <!-- Available as of 2.20 (or so), default is 30 -->
+                            <forkedProcessExitTimeoutInSeconds>300</forkedProcessExitTimeoutInSeconds>
+
+                            <!-- Note: System properties cannot be set at the Maven command line,
+                                they are not passed on to the JVM spawned by Surefire (if any, see parameter
+                                forkCount) -->
+                            <argLine>
+                                -javaagent:"${project.build.directory}/vulas/lib/vulas-core-latest-jar-with-dependencies.jar"
+                                -Dvulas.shared.backend.serviceUrl=${vulas.shared.backend.serviceUrl}
+                                -Dvulas.shared.tmpDir=${project.build.directory}/vulas/tmp
+                                -Dvulas.core.backendConnection=READ_ONLY
+                                -Dvulas.core.uploadDir=${project.build.directory}/vulas/upload
+                                -Dvulas.core.monitor.periodicUpload.enabled=false
+                                -Dvulas.core.appContext.group=${vulas.core.appContext.group}
+                                -Dvulas.core.appContext.artifact=${vulas.core.appContext.artifact}
+                                -Dvulas.core.appContext.version=${vulas.core.appContext.version}
+                                -Dvulas.core.instr.writeCode=false
+                                -Dvulas.core.instr.maxStacktraces=10
+                                -Dvulas.core.space.token=${vulas.core.space.token}
+                                -Dvulas.core.instr.instrumentorsChoosen=com.sap.psr.vulas.monitor.trace.SingleTraceInstrumentor
+                                -noverify
+
+                                <!-- Uncomment to write the heap to disk in case of memory issues -->
+                                <!-- -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=${project.build.directory}/vulas/tmp -->
+
+                                <!-- Uncomment to debug the test execution or the Vulas plugin -->
+                                <!-- -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8000 -->
+
+                            </argLine>
+                            <!-- Exclude problematic tests -->
+                            <excludes>
+                                <exclude>**/doesnotexist.java</exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>com.sap.research.security.vulas</groupId>
+                        <artifactId>plugin-maven</artifactId>
+                        <version>${vulas.version}</version>
+                        <configuration>
+                            <layeredConfiguration>
+                                <vulas.shared.backend.serviceUrl>${vulas.shared.backend.serviceUrl}</vulas.shared.backend.serviceUrl>
+                                <vulas.core.space.token>${vulas.core.space.token}</vulas.core.space.token>
+
+                                <vulas.core.appContext.group>${vulas.core.appContext.group}</vulas.core.appContext.group>
+                                <vulas.core.appContext.artifact>${vulas.core.appContext.artifact}</vulas.core.appContext.artifact>
+                                <vulas.core.appContext.version>${vulas.core.appContext.version}</vulas.core.appContext.version>
+
+                                <vulas.shared.tmpDir>${project.build.directory}/vulas/tmp</vulas.shared.tmpDir>
+                                <vulas.core.uploadDir>${project.build.directory}/vulas/upload</vulas.core.uploadDir>
+                                <vulas.core.app.sourceDir>${project.build.directory}/classes,${project.basedir}/src/main/java,${project.basedir}/src/main/python</vulas.core.app.sourceDir>
+
+                                <!-- vulas:instr : Instruments JAR/WAR files found in source dir,
+                                    and writes to target dir. Files in include dir are put into /WEB-INF/lib
+                                    of output WARs. Files in lib dir are part of the class path when instrumenting. -->
+                                <vulas.core.instr.sourceDir>${project.build.directory}</vulas.core.instr.sourceDir>
+                                <vulas.core.instr.targetDir>${project.build.directory}/vulas/target</vulas.core.instr.targetDir>
+                                <vulas.core.instr.includeDir>${project.build.directory}/vulas/include</vulas.core.instr.includeDir>
+                                <vulas.core.instr.libDir>${project.build.directory}/vulas/lib</vulas.core.instr.libDir>
+                                <vulas.core.instr.writeCode>false</vulas.core.instr.writeCode>
+                                <vulas.core.instr.searchRecursive>false</vulas.core.instr.searchRecursive>
+
+                                <!-- vulas:a2c/t2c : Performs static call graph analysis -->
+                                <vulas.reach.wala.callgraph.reflection>NO_FLOW_TO_CASTS_NO_METHOD_INVOKE</vulas.reach.wala.callgraph.reflection>
+                                <vulas.reach.timeout>60</vulas.reach.timeout>
+
+                                <!-- vulas:report -->
+                                <vulas.report.exceptionExcludeBugs></vulas.report.exceptionExcludeBugs>
+                                <vulas.report.reportDir>${project.build.directory}/vulas/report</vulas.report.reportDir>
+                                <!--<vulas.report.sap.scv>replace-with-PPMS-object-number</vulas.report.sap.scv>-->
+                            </layeredConfiguration>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>

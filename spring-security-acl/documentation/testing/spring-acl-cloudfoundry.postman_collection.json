@@ -1,0 +1,157 @@
+{
+	"variables": [],
+	"info": {
+		"name": "CPApplicationSecurity-CF",
+		"_postman_id": "8e7e3ccb-8a80-3f64-035f-1adfafa489a7",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "/ads/actuator/health",
+			"request": {
+				"url": "{{approuterUri}}/ads/actuator/health",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"title\":\"test\",\n\t\"price\": \"40\",\n\t\"contact\": \"myemail\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/ads/api/v1/ads/acl/my",
+			"request": {
+				"url": "{{approuterUri}}/ads/api/v1/ads/acl/my",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch X-Csrf-Token for POST / PUT",
+			"request": {
+				"url": "{{approuterUri}}",
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-csrf-token",
+						"value": "fetch",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": "Prerequisite: Activate Postman Interceptor\n\nEnter the received JSESSIONID in the \"Cookie\" header"
+			},
+			"response": []
+		},
+		{
+			"name": "/ads/api/v1/ads/acl",
+			"request": {
+				"url": "{{approuterUri}}/ads/api/v1/ads/acl",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "x-csrf-token",
+						"value": "",
+						"description": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"title\":\"test\",\n\t\"price\": \"40\",\n\t\"contact\": \"myemail\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/.../acl/grantPermissionsToUserGroup/{id}",
+			"request": {
+				"url": "{{approuterUri}}/ads/api/v1/ads/acl/grantPermissionsToUserGroup/{id}",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "x-csrf-token",
+						"value": "csrfProtection",
+						"description": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\":\"UG_MY_TEAM\",\n\t\"permissionCodes\":[\"R\"]\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/.../acl/grantPermissionsToUser/{id}",
+			"request": {
+				"url": "{{approuterUri}}/ads/api/v1/ads/acl/grantPermissionsToUser/{id}",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "x-csrf-token",
+						"value": "csrfProtection",
+						"description": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\":\"myfriend\",\n\t\"permissionCodes\":[\"R\", \"A\"]\n}"
+				},
+				"description": "Publish to Group, specify permission(s)"
+			},
+			"response": []
+		},
+		{
+			"name": "/.../acl/removePermissionsFromUser/{id}",
+			"request": {
+				"url": "{{approuterUri}}/ads/acl/removePermissionsFromUser/{id}",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "x-csrf-token",
+						"value": "",
+						"description": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\":\"myfriend\",\n\t\"permissionCodes\":[\"R\"]\n}"
+				},
+				"description": "Publish to Group, specify permission(s)"
+			},
+			"response": []
+		}
+	]
+}

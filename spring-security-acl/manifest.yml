@@ -1,0 +1,34 @@
+---
+applications:
+- name: bulletinboard-ads-d012345
+  memory: 1G
+  timeout: 360
+  path: target/demo-application-security-acl.jar
+  buildpack: https://github.com/cloudfoundry/java-buildpack.git#v4.15
+  health-check-type: http
+  health-check-http-endpoint: /actuator/health
+  env:
+    # Disable Spring Auto Reconfiguration
+    JBP_CONFIG_SPRING_AUTO_RECONFIGURATION: '{enabled: false}'
+    # Use the non-blocking /dev/urandom instead of the default to generate random numbers.
+    # When using Java community buildpack, increase startup times, especially when using Spring Boot.
+    JAVA_OPTS: -Djava.security.egd=file:///dev/./urandom
+  services:
+  - postgres-bulletinboard-ads
+  - uaa-bulletinboard
+
+- name: approuter-d012345
+  path: src/main/approuter
+  buildpack: https://github.com/cloudfoundry/nodejs-buildpack.git#v1.6.30
+  memory: 512M
+  timeout: 360
+  env:
+    TENANT_HOST_PATTERN: "^(.*)-approuter-d012345.cfapps.sap.hana.ondemand.com"
+    destinations: >
+      [{
+         "name":"ads-destination",
+         "url" :"https://bulletinboard-ads-d012345.cfapps.sap.hana.ondemand.com",
+         "forwardAuthToken": true}
+      ]
+  services:
+  - uaa-bulletinboard

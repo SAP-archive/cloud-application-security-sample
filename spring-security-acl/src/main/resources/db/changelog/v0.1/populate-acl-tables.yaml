@@ -1,0 +1,21 @@
+databaseChangeLog:
+- changeSet:
+    id: 1
+    author: sap
+    changes:
+    - loadData:
+        encoding: UTF-8
+        file: db.population/acl_class.csv
+        tableName: acl_class
+    - loadData:
+        encoding: UTF-8
+        file: db.population/acl_sid.csv
+        tableName: acl_sid
+    - loadData:
+        encoding: UTF-8
+        file: db.population/acl_object_identity.csv
+        tableName: acl_object_identity
+    - loadData:
+        encoding: UTF-8
+        file: db.population/acl_entry.csv
+        tableName: acl_entry

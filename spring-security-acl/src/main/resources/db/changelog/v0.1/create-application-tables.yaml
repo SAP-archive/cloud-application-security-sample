@@ -1,0 +1,55 @@
+databaseChangeLog:
+- changeSet:
+    id: 1
+    author: sap
+    changes:
+    - createTable:
+        tableName: advertisement
+        columns:
+        - column:
+            name: id
+            type: bigserial
+            autoIncrement: true
+            constraints:
+              primaryKey: true
+              nullable: false
+        - column:
+            name: version
+            type: bigint
+            constraints:
+              nullable: true
+        - column:
+            name: created_at
+            type: timestamp
+            constraints:
+              nullable: false
+        - column:
+            name: created_by
+            type: varchar(100)
+            constraints:
+              nullable: false
+        - column:
+            name: modified_at
+            type: timestamp
+            constraints:
+              nullable: true
+        - column:
+            name: modified_by
+            type: varchar(100)
+            constraints:
+              nullable: true
+        - column:
+            name: title
+            type: varchar(255)
+            constraints:
+              nullable: false
+        - column:
+            name: is_published
+            type: boolean
+            constraints:
+              nullable: false
+        - column:
+            name: contact
+            type: varchar(100)
+            constraints:
+              nullable: false
