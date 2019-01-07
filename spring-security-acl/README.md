@@ -17,43 +17,44 @@ This document is divided into the following sections
 
 <a id='motivation'></a>
 ## Motivation
-Assume you have a cloud-native Spring(Boot) application that exposes REST APIs to access (read, write,...) instances that are worth protecting. An instance could be a business object having the type of a procurement order, a leave request or in our case an advertisement. With Spring Security ACL you can control the access to dedicated instances. An **Access Control List (ACL)** is a list of permissions attached to a dedicated instance. An ACL specifies for an instance which operations (e.g. read, write, publish, ...) are granted to an identity. An identity can be a user principal or match to a user role/attribute.
+Assume you have a cloud-native Spring(Boot) application that exposes REST APIs to access (read, write,...) instances that are worth protecting. An instance could be a business object having the type of a procurement order, a leave request or in our case an advertisement. With Spring Security ACL you can control the access to dedicated instances. 
+
+An **Access Control List (ACL)** is a list of permissions attached to a dedicated instance. An ACL specifies for an instance which operations (e.g. read, write, publish, ...) are granted to an identity. An identity can be a user principal or match to a user role/attribute.
 
 Spring ACL approach can be useful when:
-- The instance-based access cannot solely be protected by roles (scopes and attributes) as described in the [spring-security-basis](/cp-application-security/tree/master/spring-security-basis), and in addition there is no "static" criteria (like cost center, confidentiality level, ...) that could be used as a filter. Then the decision whether a user is authorized for a certain instance can be defined per instance completely free of limitations just by maintaining the ACL.
+- The instance-based access cannot solely be protected by roles (scopes and attributes), and in addition there is no "static" criteria (like cost center, confidentiality level, ...) that could be used as a filter. Then the decision whether a user is authorized for a certain instance can be defined per instance completely free of limitations just by maintaining the ACL.
 - If the instance-based access shall change dynamically during the instance lifecycle without the change of an attribute value this can be done by changing the ACL without changing the object itself.
-- The instance owner wants to delegate permissions to a dedicated user/substitute without consulting the administrator. During vacation a manager likes to delegate the approvals of leave requests to the dedicated team leads.
--	The attribute that shall be used is not directly part of the business objects persistence but coming from some relation to another object. Then the ACL table can help to have a uniform way to build up the SQL statement with a JOIN to implement the filter condition
+- The instance owner wants to delegate permissions to a dedicated user/substitute without consulting the administrator. For example, during vacation a manager likes to delegate the approvals of leave requests to the dedicated team leads.
+-	The user's authorization is related to an object, that does not directly belong to the core domain of your application, like cost-center and is therefore not part of your application persistence. Still ACL entries can reflect this kind of relationships between application instances and foreign domain object as part of the ACL.
 - You want to model ACL hierarchies.
   - For example, you are a facilitator and you have edit-permissions to some buildings within a location. Furthermore, you should have the same permissions to most of the rooms, that are linked to the buildings.
   - Same could be the case for organizational hierarchies, like cost center.
 - You like to manage the ACL as part of your application and close to the instances, you want to protect without delegating the task of authorization management to a dedicated user administrator. 
-- Spring ACL simplifies the implementation of audit logs and GDPR compliance as all relevant data is stored in central authorization tables.
+
+Additionally, Spring ACL simplifies the implementation of audit logs and GDPR compliance as all relevant data is stored in central authorization tables.
 
 <a id='comparison'></a>
 ## Comparison of the Filter Approach with the ACL Approach
-Access Limitation on Data Level with Filter Conditions was explained in [spring-security-basis](/cp-application-security/tree/master/spring-security-basis).
 
 ### Advantages of the Filter Approach
-+ In general, a better performance especially for large data volume as no unauthorized data is selected from the DB and later on not used due to missing authorization.
-+ Lower development effort as not much additional infrastructure is needed
++ Simplicity, and lower development effort as no additional infrastructure is needed.
 
 ### Advantages of the ACL Approach
 + The authorization decision is better understandable as missing authorizations can be clearly identified as such and not just as a reduced result list of an operation that can have different reasons.
-+ Auditability and effort for logging of the authorization relevant data is much easier as all information is kept in a central place (The ACL tables) and not distributed in application tables that have to care for change log themselves.
-+ The ACL Approach can be combined with the Filter approach (with the cost of an additional JOIN)
++ Auditability and effort for logging of the authorization relevant data is much easier as all information is kept in a central place (the ACL tables) and not distributed in application tables that have to care for change log themselves.
++ The ACL Approach can be combined with the Filter approach (with the cost of an additional table JOIN).
 
 <a id='examples'></a>
 ## Examples / Use cases
 
 ### Create an protect-worthy instance and assign initial permissions to owner
-The user with log-on name `adOwner` creates a new advertisement (id = `55`). You can test with POST-request `/api/v1/ads/acl/` that the following entries are created in the postgreSql `test` database.
+The user with log-on name `advertiser` creates a new advertisement (id = `55`). You can test with POST-request `/api/v1/ads/acl/` that the following entries are created in the postgreSql `test` database.
 
-- For the user principal `adOwner` an entry gets created (if not yet there) in the `ACL_SID` table:
+- For the user principal `advertiser` an entry gets created (if not yet there) in the `ACL_SID` table:
 
    id | principal | sid  
   -- | ---- | --------  
-   7 | true | adOwner 
+   7 | true | advertiser 
 
 - For the new advertisement instance with id `55` an entry gets created in the `ACL_OBJECT_IDENTITY` table:
 
@@ -75,7 +76,7 @@ The user with log-on name `adOwner` creates a new advertisement (id = `55`). You
   > It's possible to insert both granting and revoking entries in `ACL_ENTRY`, the `ace_order` matters meaning it's possible to revoke access in line 0 and that will take precedence over a grant on line 1.
 
 ### Delegate: grant write-permission to individuals
-Any user with "admin" permission (e.g. instance owner) for an advertisement can grant permissions to other individuals (e.g. `myfriend`) without involvement of an administrator. You can test with PUT-request to `/api/v1/ads/acl/grantPermissionsToUser/{id}`.
+Any user with "admin" permission (e.g. instance owner) for an advertisement should be able to grant permissions to other individuals (e.g. `myfriend`) without involvement of an administrator. You can test with PUT-request to `/api/v1/ads/acl/grantPermissionsToUser/{id}`.
 
 - Again, for the user principal `myfriend` an entry gets created (if not yet there) in the `ACL_SID` table:
 
@@ -94,9 +95,9 @@ Any user with "admin" permission (e.g. instance owner) for an advertisement can 
   31 | 3 | 5 | 8 | 16 | true | true | true |   
 
 ### Collaborate: grant write-permission to my team members
-Any user with "admin" permission for an advertisement can grant permission to other users of a dedicated user group. You can test with PUT-request to `/api/v1/ads/acl/grantPermissionsToUserGroup/{id}`.
+Any user with "admin" permission for an advertisement should be able to grant permission to all users of a dedicated user group. You can test with PUT-request to `/api/v1/ads/acl/grantPermissionsToUserGroup/{id}`.
 
-First question might be, how to model / specify a user group? How we've done it: any user must provide its group assignnments as `xs.user.attributes` as part of its SAML Bearer token (jwt token):
+First question might be, how to model / specify a user group? How we've done it: any user must provide its group assignnments as `xs.user.attributes` as part of its JWT token:
 
 ```
 {   
@@ -110,7 +111,7 @@ First question might be, how to model / specify a user group? How we've done it:
 }
 ```
 
-Additionally these groups e.g. `UG_MY_TEAM` must be populated in the `ACL_SID` table:
+These groups e.g. `UG_MY_TEAM` must be exposed in the `ACL_SID` table:
 
   id | principal | sid  
   --- | ---- | --------  
@@ -122,13 +123,24 @@ Additionally these groups e.g. `UG_MY_TEAM` must be populated in the `ACL_SID` t
 For each permission (read, write,...) the user group "UG_MY_TEAM" (sid = `9`) gets for the instance (acl_object_identity = `3`) an `ACL_ENTRY` table entry as we've learnt in the examples above. With that the number of `ACL_ENTRY` table entries can be reduced by the number of individuals a user group consists of.
 
 ### Append instance to a parent instance and inherit its permissions
-Now the `advertisement` (id = `55`) is in a final state and should be published to a bulletinboard, that can be watched by many other people.
+Now the `advertisement` (id = `55`) is in a final state and should be published to a bulletinboard that is watched by many other people.
 
-Here the user acts as `publisher`, who requires "admin" permission of the advertisement to be published as well as access to the target bulletinboard (xs.user.attribute {bulletinboard = DE_WDF03)}.
+Here the user acts as "publisher", who requires "admin" permission of the advertisement to be published as well as access to the target bulletinboard:
 
+```
+{   
+    ...
+    "scope": [],
+    "xs.user.attributes": {
+       "bulletinboard": [
+          "DE_WDF03_Board"
+       ]
+    }
+}
+```
 
-Note that in our case the bulletinboard is not a business object that is managed by our `Advertisement` application.
-So we only would like to refer to it by a key of type `java.lang.String`.
+Note that in our case the bulletinboard is not a core domain object that is *managed* by our `Advertisement` application.
+So we'd only like to refer to it by a key of type `java.lang.String`.
 
 - "Static" entries in `ACL_CLASS` table:
 
@@ -138,9 +150,9 @@ So we only would like to refer to it by a key of type `java.lang.String`.
   | 2.002 | bulletinboard | java.lang.String |
   | 1 | com.sap.cp.appsec.domain.Advertisement | java.lang.Long |
 
-  > Note that the target parent instance - in our case the `bulletinboard` - must not necessarily be an instance of a Java Class with an identifier of type `java.lang.Long`. You can also specify a unique identifier such as `DE_WDF03_Board` of type String in the `ACL_OBJECT_IDENTITY` table.
+  > Note that the target parent instance - in our case the `bulletinboard` - must not necessarily be an instance of a Java Class with an identifier of type `java.lang.Long`. With Spring security version `5.2.0` you can also specify a unique identifier such as `DE_WDF03_Board` of type `java.lang.String` or `java.util.UUID` in the `ACL_OBJECT_IDENTITY` table.
 
-- Entries in `ACL_OBJECT_IDENTITY` (before) publishing:
+- Entries in `ACL_OBJECT_IDENTITY` before publishing:
 
   id | object_id_class | object_id_identity | parent_object | owner_sid | entries_inheriting |
   -- | -- | -- | -- | -- | -- |
@@ -175,8 +187,7 @@ After this the related entries for the principal user (sid) should disappear fro
 
 # <a name="setupandstart"></a>Setup and Start
 ## Prerequisites
-- Have a trial account on [SAP CP Cloud Foundry](https://help.cf.sap.hana.ondemand.com/).
-- Setup your development environment with at least java, maven, docker ... as explained [here](documentation/Prerequisites.md). **TODO**
+Setup your development environment with at least java, maven, docker ... as explained [here](/prerequisites/README.md). 
 
 
 ### Prepare local environment
@@ -184,7 +195,7 @@ After this the related entries for the principal user (sid) should disappear fro
 The application is setup to connect to a PostgreSQL database.
 
 For this, the local system environment variable `VCAP_SERVICES` must contain the corresponding connection information.
-The provided `localEnvironmentSetup.sh` shell script can be used to set the necessary values. Within your development IDE (Eclipse, IntelliJ), you need to define the `SPRING_PROFILES_ACTIVE`, `VCAP_SERVICES` and `VCAP_APPLICATION` environment variable as done in this script.
+The provided `localEnvironmentSetup.bat` script can be used to set the necessary values. Within your development IDE (Eclipse, IntelliJ), you need to define the `SPRING_PROFILES_ACTIVE`, `VCAP_SERVICES` and `VCAP_APPLICATION` environment variable as done in this script.
 
 Replace in your `spring-security-acl` project any occurence of `d012345` or `D012345` by your SAP Account User Name.
 
@@ -203,55 +214,59 @@ docker-compose down
 
 To run the service locally you have two options: start it directly via Maven on the command line or within Eclipse.
 
-In both cases, your application will be deployed to an embedded Tomcat web server and is visible at the address `http://localhost:8080/api/v1/ads`.
+In both cases, your application will be deployed to an embedded Tomcat web server and is visible at the address `http://localhost:8080/api/v1/ads/acl`.
 
 ### Run on the command line
 Execute in terminal (within project root e.g. ~/git/cc-bulletinboard-ads-spring-boot, which contains the`pom.xml`):
 ```bash 
 source localEnvironmentSetup.sh
-mvn spring-boot:run
+./mvnw spring-boot:run
 ```
 
 Or on Windows command line:
 ```bash
 localEnvironmentSetup.bat
-mvn spring-boot:run
+mvnw spring-boot:run
 ```
 
 ### Run in Eclipse (STS)
-In Eclipse Spring Tool Suite (STS) you can import the project as an existing Maven project. There you can start the main method in `com.sap.bulletinboard.ads.BulletinboardAdsApplication`.
+In Eclipse Spring Tool Suite (STS) you can import the project as an existing Maven project. There you can start the main method in `com.sap.cp.appsec.Application`.
 You can also right-click on the class in the Package Explorer, and select `Run As` - `Spring Boot App`. Make sure that you have set in the same environment variables in the Run Configuration as specified in the [`localEnvironmentSetup script`](localEnvironmentSetup.bat).
 
 ## Test locally using Postman
 The service endpoints are secured, that means no unauthorized user can access the endpoint. The application expects a so called `JWT token` as part of the `Authorization` header of the service that also contains the scope, the user is assigned to.
 
 Test the REST Service `http://localhost:8080/api/v1/ads` manually using the `Postman` chrome extension.
-You can import the [Postman collection](documentation/testing/spring-acl-local.postman_collection.json), as well as the [Postman environment](documentation/testing/spring-acl-local.postman_environment.json) that provides the different SAML bearer tokens for the `Authorization` headers to find some sample requests for local execution.
+You can import the [Postman collection](documentation/testing/spring-acl-local.postman_collection.json), as well as the [Postman environment](documentation/testing/spring-acl-local.postman_environment.json) that provides different JWT tokens for the `Authorization` headers to do some sample requests for local execution.
 
-**Note**: For all requests make sure, that you provide a header namely `Authorization` with a SAML bearer tokens (JWT token) as value e.g. `Bearer eyJhbGciOiJSUzI1NiIs...`. You can generate a valid JWT token as described [in Exercise 24](https://github.com/SAP/cloud-bulletinboard-ads/blob/Documentation/Security/Exercise_24_MakeYourApplicationSecure.md#generate-jwt-token).
+**Note**: For all requests make sure, that you provide a header namely `Authorization` with a JWT token as value e.g. `Bearer eyJhbGciOiJSUzI1NiIs...`. You can generate a valid JWT token as described [in Exercise 24](https://github.com/SAP/cloud-bulletinboard-ads/blob/Documentation/Security/Exercise_24_MakeYourApplicationSecure.md#generate-jwt-token).
 
 ## Steps to deploy to Cloud Foundry
 
 ### Build Advertisement Service (our Java application)
-Build the Advertisement Service which is a Java web application running in a Java VM. With `mvn package` Maven build tool takes the compiled code and package it in its distributable format, such as a `JAR` (Java Archive). With this the maven dependencies are downloaded from the SAP internal Nexus registry and are copied into the directory `~/.m2/repository`. Furthermore the JUnit tests (unit tests and component tests) are executed and the `target/bulletinboard-ads.jar` is created. 
+Build the Advertisement Service which is a Java web application running in a Java VM. Maven build tool compiles the code and packages it in its distributable format, such as a `JAR` (Java Archive). With this the maven dependencies are downloaded from the SAP internal Nexus registry and are copied into the directory `~/.m2/repository`. Furthermore the JUnit tests (unit tests and component tests) are executed and the `target/demo-application-security-acl.jar` is created. 
 
-Execute in terminal (within root directory, which contains the`pom.xml`):
+Execute in the command line (within project directory, which contains the`pom.xml`):
 ```
-mvn package
+./mvnw package
 ```
+... or `mvnw package` in Windows command line.
 
 ### Login to Cloud Foundry
-Make sure your are logged in to Cloud Foundry and you target your trial space. Run the following commands in the terminal:
-```
-cf api https://api.cf.sap.hana.ondemand.com
-cf login
-cf target -o  D012345trial_trial -s dev   ## replace by your space name
-```
+Make sure your are logged in to Cloud Foundry and you target your trial space.  
+The following commands will setup your environment to use the provided Cloud Foundry instance.
+
+ - `cf api <<Your API endpoint>>`
+ - `cf login -u <<your user id>>`
+ - In case you are assigned to multiple orgs, select the `trial` organisation.
+
+To find the API end point, please refer the [documentation]( https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/350356d1dc314d3199dca15bd2ab9b0e.html)
+
 
 ### Create Services
 Create the (backing) services that are specified in the [`manifest.yml`](manifest.yml).
 
-Execute in terminal (within root directory, which contains the `security` folder):
+Execute in terminal (within project directory, which contains the `security` folder):
 ```
 cf create-service postgresql v9.6-dev postgres-bulletinboard-ads
 cf create-service xsuaa application uaa-bulletinboard -c security/xs-security.json
@@ -279,23 +294,24 @@ cf map-route approuter-d012345 cfapps.sap.hana.ondemand.com -n d012345trial-appr
 > Note: the `TENANT_HOST_PATTERN` environment variable ( see `manifest.yml` file) specifies how the approuter should derive the tenant from the URL.
 
 ### Cockpit administration tasks
-In the SAP CP Cloud Cockpit ...
+Go to the [SAP Cloud Platform Cloud Cockpit](https://account.hanatrial.ondemand.com/#/home/welcome)
 - Navigate to your bulletinboard-ads application. Create some Role, e.g. `ROLE_MY_TEAM_MEMBER` based on the `GroupMember` role template. And specify its attribute `groups`=UG_MY_TEAM  
 ![](documentation/images/CreateRole.jpg)  
 
 > Note: Alternatively, in case your IdP supports SAML user attributes, you can also map to a dedicated SAML user attribute e.g. `Groups`. This gives you the advantage to inherit all group values, that are managed as part of the IdP.  
 
-- Then navigate to your Subaccount and create a RoleCollection e.g. `RC_GroupMember_MY_TEAM` and add the created Role.
+- Then navigate to your Subaccount and create a Role Collection e.g. `RC_GroupMember_MY_TEAM` and add the created Role.
 - Finally, as part of your Identity Provider, e.g. SAP ID Service, assign the created Role Collection to your user.
 
-**TODO: add a link to sap.help.com**
+Note: further up-to-date information you can get on sap.help.com: [Maintain Roles for Applications](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/7596a0bdab4649ac8a6f6721dc72db19.html))
 
 ### Test the deployed application
-Open a browser to test whether your microservice runs in the cloud. For this use the approuter URL `https://d012345trial-approuter-d012345.cfapps.sap.hana.ondemand.com/ads/actuator/health`. This will bring you the **login page**. Note: You have to enter here your SAP Cloud Identity credentials. After successful login you get redirected to the advertisement service that returns you the status of the app.
+Open a browser to test whether your microservice runs in the cloud. For this use the approuter URL, e.g. `https://d012345trial-approuter-d012345.cfapps.<<region>>.hana.ondemand.com/ads/actuator/health`. This will bring you the **login page**. Note: You have to enter here your SAP Cloud Identity credentials. After successful login you get redirected to the advertisement service that returns you the status of the application.
+
 
 This [`xs-app.json`](src/main/approuter/xs-app.json) file specifies how the approuter routes are mapped to the advertisement routes.
 
-Test the deployed REST Service on Cloud Foundry via the approuter url using the `Postman` together with the `Postman Interceptor` chrome plugin. You can import the [Postman collection](documentation/testing/spring-acl-cloudfoundry.postman_collection.json) and create an environment, which specifies the key-value pair `approuterUri`=`https://<tenantId>-approuter-<your user id>.cfapps.<region>.hana.ondemand.com`. 
+Test the deployed REST Service on Cloud Foundry via the approuter url using the `Postman` chrome plugin together with the `Postman Interceptor` chrome plugin. You can import the [Postman collection](documentation/testing/spring-acl-cloudfoundry.postman_collection.json) and create an environment, which specifies the key-value pair `approuterUri`=`https://<<your tenant>>-approuter-<<your user id>>.cfapps.<<region>>.hana.ondemand.com`. 
 
 Find a step-by-step description on how to test using `Postman` [here](https://github.com/SAP/cloud-bulletinboard-ads/blob/Documentation/Security/Exercise_24_MakeYourApplicationSecure.md).
 
