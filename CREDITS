@@ -1,0 +1,78 @@
+This program references the following third party open source or other free download components.
+The third party licensors of these components may provide additional license rights,
+terms and conditions and/or require certain notices as described below.
+
+Spring Boot Framework (https://github.com/spring-projects/spring-boot)
+Licensed under Apache License, Version 2.0 - http://www.apache.org/licenses/LICENSE-2.0
+
+Spring Security (https://github.com/spring-projects/spring-security)
+Licensed under Apache License, Version 2.0 - http://www.apache.org/licenses/LICENSE-2.0
+
+SAP Java Security Library (https://github.com/SAP/cloud-security-xsuaa-integration)
+Licensed under Apache License, Version 2.0 - http://www.apache.org/licenses/LICENSE-2.0
+
+Hibernate Core ORM (JPA) (https://github.com/hibernate/hibernate-orm/tree/master/hibernate-core)
+Licensed under GNU Lesser General Public License v2.1 - https://github.com/hibernate/hibernate-orm/blob/master/lgpl.txt
+
+PostgreSQL JDBC Driver (https://jdbc.postgresql.org/)
+Licensed under BSD 2-Clause "Simplified" License - https://github.com/pgjdbc/pgjdbc/blob/master/LICENSE
+
+HikariCP JDBC Connection Pool (https://github.com/brettwooldridge/HikariCP)
+Licensed under Apache License, Version 2.0 - http://www.apache.org/licenses/LICENSE-2.0
+
+Spring Data JPA (https://github.com/spring-projects/spring-data-jpa)
+Licensed under Apache License, Version 2.0 - http://www.apache.org/licenses/LICENSE-2.0
+
+Liquibase (http://github.com/liquibase/liquibase/)
+Licensed under Apache License, Version 2.0 - http://www.apache.org/licenses/LICENSE-2.0
+
+EHCache (http://ehcache.org/)
+Licensed under Apache License, Version 2.0 - http://www.apache.org/licenses/LICENSE-2.0
+
+Spring Cloud Connector (https://github.com/spring-cloud/spring-cloud-connectors)
+Licensed under Apache License, Version 2.0 - http://www.apache.org/licenses/LICENSE-2.0
+
+SAP Java Logging Support for Cloud Foundry (https://github.com/SAP/cf-java-logging-support)
+Licensed under Apache License, Version 2.0 - http://www.apache.org/licenses/LICENSE-2.0
+
+Jackson Project (https://github.com/FasterXML/jackson)
+Licensed under Apache License, Version 2.0 - http://www.apache.org/licenses/LICENSE-2.0
+
+Hibernate Validator (http://hibernate.org/validator/)
+Licensed under Apache License, Version 2.0 - http://www.apache.org/licenses/LICENSE-2.0
+
+
+JUnit (https://junit.org/junit4/)
+Licensed under Eclipse Public License 1.0 - http://www.eclipse.org/legal/epl-v10.html
+
+Java Hamcrest (http://hamcrest.org/JavaHamcrest/)
+Licensed under BSD-3-Clause License - https://opensource.org/licenses/BSD-3-Clause
+
+Mockito (http://site.mockito.org/)
+Licensed under MIT License - https://github.com/mockito/mockito/blob/master/LICENSE
+
+Jayway JsonPath (https://github.com/json-path/JsonPath/)
+Licensed under Apache License, Version 2.0 - http://www.apache.org/licenses/LICENSE-2.0
+
+H2 Database (http://www.h2database.com/html/main.html)
+Licensed under Mozilla Public License Version 2.0 - https://www.mozilla.org/en-US/MPL/2.0/
+
+
+Tomcat Maven Plugin (https://tomcat.apache.org/maven-plugin-trunk/tomcat7-maven-plugin/)
+Licensed under Apache License, Version 2.0 - http://www.apache.org/licenses/LICENSE-2.0
+
+JaCoCo Java Code Coverage Library (http://www.eclemma.org/jacoco/)
+Licensed under Eclipse Public License v1.0 - http://www.eclipse.org/legal/epl-v10.html
+
+FindBugs Maven Plugin (https://gleclaire.github.io/findbugs-maven-plugin/)
+Licensed under Apache License, Version 2.0 - https://gleclaire.github.io/findbugs-maven-plugin/license.html
+
+Apache Maven PMD Plugin (https://maven.apache.org/plugins/maven-pmd-plugin/)
+Licensed under Apache License, Version 2.0 - http://www.apache.org/licenses/LICENSE-2.0
+
+Maven Surefire Plugin (http://maven.apache.org/components/surefire/maven-surefire-plugin/)
+Licensed under Apache License, Version 2.0 - http://www.apache.org/licenses/LICENSE-2.0
+
+Maven Failsafe Plugin (http://maven.apache.org/components/surefire/maven-failsafe-plugin/)
+Licensed under Apache License, Version 2.0 - http://www.apache.org/licenses/LICENSE-2.0
+
