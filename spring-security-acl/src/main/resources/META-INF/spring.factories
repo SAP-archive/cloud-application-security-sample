@@ -1,4 +1,3 @@
 # https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/env/EnvironmentPostProcessor.html
-# TODO update to provided MockPostProcessor, e.g. com.sap.cloud.security.xsuaa.mock.MockPostProcessor
-org.springframework.boot.env.EnvironmentPostProcessor=com.sap.cp.appsec.mock.MockPostProcessor
+org.springframework.boot.env.EnvironmentPostProcessor=com.sap.cp.appsec.mock.XsuaaMockPostProcessor
 

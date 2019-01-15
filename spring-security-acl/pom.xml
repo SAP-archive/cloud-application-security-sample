@@ -34,7 +34,6 @@
         <!-- wait for 5.2.0.M1 planned for january 15th-->
         <spring.security.version>5.2.0.BUILD-SNAPSHOT</spring.security.version> <!-- spring-security-acl-5.2.0.BUILD-20181109.180203-56.jar-->
         <sap.cloud.security.version>1.2.0</sap.cloud.security.version>
-        <jackson.version>2.9.8</jackson.version> <!-- vulas -->
     </properties>
 
     <dependencies>
@@ -78,26 +77,10 @@
             <artifactId>spring-xsuaa</artifactId>
             <version>${sap.cloud.security.version}</version>
         </dependency>
-        <dependency> <!-- JWT decoder -->
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-oauth2-jose</artifactId>
-            <version>${spring.security.version}</version>
-        </dependency>
-        <dependency> <!-- Mock WebServer for offline Token validation-->
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-oauth2-resource-server</artifactId>
-            <version>${spring.security.version}</version>
-        </dependency>
         <dependency>
-            <groupId>com.squareup.okhttp3</groupId>
-            <artifactId>mockwebserver</artifactId>
-            <version>3.9.1</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.bouncycastle</groupId>
-                    <artifactId>bcprov-jdk15on</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>com.sap.cloud.security.xsuaa</groupId>
+            <artifactId>spring-xsuaa-mock</artifactId>
+            <version>${sap.cloud.security.version}</version>
         </dependency>
 
         <!-- Spring Security ACL -->
@@ -135,9 +118,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-jwt</artifactId>
-            <version>1.0.9.RELEASE</version>
+            <groupId>com.sap.cloud.security.xsuaa</groupId>
+            <artifactId>spring-xsuaa-test</artifactId>
+            <version>${sap.cloud.security.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
