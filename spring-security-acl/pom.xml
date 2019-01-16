@@ -31,8 +31,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
-        <!-- wait for 5.2.0.M1 planned for january 15th-->
-        <spring.security.version>5.2.0.BUILD-SNAPSHOT</spring.security.version> <!-- spring-security-acl-5.2.0.BUILD-20181109.180203-56.jar-->
+        <spring.security.version>5.2.0.M1</spring.security.version>
         <sap.cloud.security.version>1.2.0</sap.cloud.security.version>
     </properties>
 
