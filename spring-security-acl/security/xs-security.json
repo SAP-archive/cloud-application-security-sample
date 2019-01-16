@@ -6,7 +6,7 @@
     {
       "name": "group",
       "description": "Assignment to User groups, the user collaborates with",
-      "valueType" : "STRING"
+      "valueType" : "string"
     },{
       "name": "bulletinboard",
       "description": "Bulletinboards, advertisements are published to",

@@ -295,7 +295,8 @@ cf map-route approuter-d012345 cfapps.sap.hana.ondemand.com -n d012345trial-appr
 
 ### Cockpit administration tasks
 Go to the [SAP Cloud Platform Cloud Cockpit](https://account.hanatrial.ondemand.com/#/home/welcome)
-- Navigate to your bulletinboard-ads application. Create some Role, e.g. `ROLE_MY_TEAM_MEMBER` based on the `GroupMember` role template. And specify its attribute `groups`=UG_MY_TEAM  
+- Navigate to your bulletinboard-ads application. Create some Role, e.g. `ROLE_MY_TEAM_MEMBER` based on the `GroupMember` role template. And specify its attribute `group`=`UG_MY_TEAM`:
+
 ![](documentation/images/CreateRole.jpg)  
 
 > Note: Alternatively, in case your IdP supports SAML user attributes, you can also map to a dedicated SAML user attribute e.g. `Groups`. This gives you the advantage to inherit all group values, that are managed as part of the IdP.  
