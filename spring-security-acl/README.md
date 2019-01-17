@@ -55,6 +55,8 @@ The user with log-on name `advertiser` creates a new advertisement (id = `55`). 
    id | principal | sid  
   -- | ---- | --------  
    7 | true | advertiser 
+   
+  > Note: the `sid` value is in fact not `advertiser` but contains also the origin (IdP) of the Jwt token `user/{origin}/advertiser`.
 
 - For the new advertisement instance with id `55` an entry gets created in the `ACL_OBJECT_IDENTITY` table:
 
@@ -73,7 +75,7 @@ The user with log-on name `advertiser` creates a new advertisement (id = `55`). 
   27 | 3 | 1 | 7 |  2 | true | true | true | 
   28 | 3 | 2 | 7 | 16 | true | true | true |
 
-  > It's possible to insert both granting and revoking entries in `ACL_ENTRY`, the `ace_order` matters meaning it's possible to revoke access in line 0 and that will take precedence over a grant on line 1.
+  > It's possible to insert both granting and revoking entries in `ACL_ENTRY`. The `ace_order` matters meaning it's possible to revoke access in line 0 and that will take precedence over a grant on line 1.
 
 ### Delegate: grant write-permission to individuals
 Any user with "admin" permission (e.g. instance owner) for an advertisement should be able to grant permissions to other individuals (e.g. `myfriend`) without involvement of an administrator. You can test with PUT-request to `/api/v1/ads/acl/grantPermissionsToUser/{id}`.
@@ -93,6 +95,7 @@ Any user with "admin" permission (e.g. instance owner) for an advertisement shou
   29 | 3 | 3 | 8 |  1 | true | true | true | 
   30 | 3 | 4 | 8 |  2 | true | true | true | 
   31 | 3 | 5 | 8 | 16 | true | true | true |   
+  
 
 ### Collaborate: grant write-permission to my team members
 Any user with "admin" permission for an advertisement should be able to grant permission to all users of a dedicated user group. You can test with PUT-request to `/api/v1/ads/acl/grantPermissionsToUserGroup/{id}`.
@@ -121,6 +124,9 @@ These groups e.g. `UG_MY_TEAM` must be exposed in the `ACL_SID` table:
   10 | false | ATTR:GROUP=UG_OTHER_TEAM
    
 For each permission (read, write,...) the user group "UG_MY_TEAM" (sid = `9`) gets for the instance (acl_object_identity = `3`) an `ACL_ENTRY` table entry as we've learnt in the examples above. With that the number of `ACL_ENTRY` table entries can be reduced by the number of individuals a user group consists of.
+
+> Technical note: when grouping individuals by non-principal SIDs (e.g. `ATTR:GROUP=UG_MY_TEAM`) the number of entries in the `ACL_ENTRY` table can be reduced.
+  
 
 ### Append instance to a parent instance and inherit its permissions
 Now the `advertisement` (id = `55`) is in a final state and should be published to a bulletinboard that is watched by many other people.
@@ -170,6 +176,7 @@ So we'd only like to refer to it by a key of type `java.lang.String`.
   ... | ... | ... | ... | ... | ... |
   3 | 1 | 55 | 1200 | 1 | true |
   
+  > Technical note: with hierachical permissions the number of entries in the `ACL_OBJECT_IDENTITY` table can be reduced.  
 
 ### Pageable access to all instances i have explicit / implicit access to
 User with permissions for a bulletinboard, has the same permissions for its (published) advertisement instances. In this case the advertisement instances inherits the permissions of the parent instance, i.e. the bulletinboard.
@@ -309,7 +316,6 @@ Note: further up-to-date information you can get on sap.help.com: [Maintain Role
 ### Test the deployed application
 Open a browser to test whether your microservice runs in the cloud. For this use the approuter URL, e.g. `https://d012345trial-approuter-d012345.cfapps.<<region>>.hana.ondemand.com/ads/actuator/health`. This will bring you the **login page**. Note: You have to enter here your SAP Cloud Identity credentials. After successful login you get redirected to the advertisement service that returns you the status of the application.
 
-
 This [`xs-app.json`](src/main/approuter/xs-app.json) file specifies how the approuter routes are mapped to the advertisement routes.
 
 Test the deployed REST Service on Cloud Foundry via the approuter url using the `Postman` chrome plugin together with the `Postman Interceptor` chrome plugin. You can import the [Postman collection](documentation/testing/spring-acl-cloudfoundry.postman_collection.json) and create an environment, which specifies the key-value pair `approuterUri`=`https://<<your tenant>>-approuter-<<your user id>>.cfapps.<<region>>.hana.ondemand.com`. 
@@ -319,24 +325,32 @@ Find a step-by-step description on how to test using `Postman` [here](https://gi
 <a id='notes'></a>
 ## Implementation Details 
 
-1. Setup Spring ACL database table (using liquibase): [database changelog](src/main/resources/db.changelog), [database changelog](src/main/resources/db.population)
+1. Setup Spring ACL database table (using liquibase): [database changelog](src/main/resources/db.changelog), [database population](src/main/resources/db.population)
 1. Configure Spring ACL: [AclConfig](src/main/java/com/sap/cp/appsec/config/AclConfig.java) and [AclAuditLogger](src/main/java/com/sap/cp/appsec/config/AclAuditLogger.java)
 1. Convenience wrapper for Spring `AclService` implementation: [AclSupport](https://github.wdf.sap.corp/CPSecurity/cp-application-security/blob/master/spring-security-acl/src/main/java/com/sap/cp/appsec/security/AclSupport.java)
-1. The application needs to support values-request for the application-specific `xs.user.attributes`, e.g. `group : [AttributeFinderController](src/main/java/com/sap/cp/appsec/controllers/AttributeFinderController.java).
 1. Assign user's attributes to Spring Security Context: [CustomTokenAuthorizationsExtractor](src/main/java/com/sap/cp/appsec/security/CustomTokenAuthorizationsExtractor.java).
 1. Assign and validate instance permissions: [AdvertisementService](src/main/java/com/sap/cp/appsec/controllers/AdvertisementService.java).
-1. Application security model consists of role-templates with references to attributes only: [xs-security.json](security/xs-security.json)
 1. Support of pagination is implemented with Spring Data and SQL CE functions: [AdvertisementAclRepository](src/main/java/com/sap/cp/appsec/domain/AdvertisementAclRepository.java)
+1. The application should support values-request for the application-specific `xs.user.attributes`, e.g. `/api/v1/attribute/group` : [AttributeFinderController](src/main/java/com/sap/cp/appsec/controllers/AttributeFinderController.java).
+1. Application security model consists of role-templates with references to attributes only: [xs-security.json](security/xs-security.json)
+
+### Permissions an bitwise masking 
+By default, Spring ACL refers to [`BasePermission`](https://docs.spring.io/spring-security/site/apidocs/org/springframework/security/acls/domain/BasePermission.html) class for all available permissions (actions). 
+You may subclass `BasePermission` in order to define application specific permissions. In this case you also need to replace as part of the `lookupStrategy` bean the `DefaultPermissionFactory` by your custom `PermissionFactory` implementation.
+
+By default the `DefaultPermissionGrantingStrategy` does only support exact mask matching, even when using a composite mask e.g. "RW". This behaviour was discussed here on Spring ACL github project:
+- https://github.com/spring-projects/spring-security/issues/1388
+- https://github.com/spring-projects/spring-security/issues/2571
+
+### Support of paginated Rest APIs
+With Spring ACL you can reject unauthorized access of instances on method level using `@PreAuthorize("hasPermission(<object>,<permission>)")` or `@PreAuthorize("hasPermission(<id>, <type>, <permission>)")`. Furthermore you can filter the result set by making use of `@PostAuthorize("hasPermission(<object>, <permission>)")`, after the result set has been retrieved from underlying layers (often database). This is obviously not the best approach in terms of performance, too many useless objects are retrieved but evicted by the filter. Let's consider pagination and assume a page size of 20 items. Spring Data repository returns up to 20 items, but all of them needs to be filtered, as the caller is not granted to access those... 
+
+As consequence we have implemented as part of our Spring Data repository our own SQL CE function to fetch only these instances from the database, the user has granted access to.
+
+[Example `PagingAndSortingRepository` Implementation of Spring Data](src/main/java/com/sap/cp/appsec/domain/AdvertisementAclRepository.java)
 
 
-### Breakpoints for troubleshoot
-- PermissionEvaluator
-
-### Permissions
-Permission (actions) can be specified application specific.
-1. **TODO: BitMasking of Permissions**
-
-### (Audit) Logging
+### (Audit) logging
 You can implement an audit logger that is able to write audit-relevant logs in case of granted / un-granted access to an [AuditableAcl (ACL)](https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/acls/model/AuditableAcl.html) or more precisely to an [AuditableAccessControlEntry (ACE)](https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/acls/model/AuditableAccessControlEntry.html). 
 
 Note: by default, an ACE is not configured to audit successful or failed access. You need to specify that in context of the `AuditableAcl` object with `updateAuditing(aceIndex, auditSuccess, auditFailure)`. 
@@ -348,62 +362,62 @@ Therefore we suggest to enhance your audit logger implementation in order to han
 
 [Example Implementation of AuditLogger](src/main/java/com/sap/cp/appsec/config/AclAuditLogger.java).
 
+
 #### Example logs when Advertisement is created and ACL is instantiated 
 ```
-2019-01-17 11:38:01.917 DEBUG 16360 --- [main] o.s.s.w.a.i.FilterSecurityInterceptor    : Secure object: FilterInvocation: URL: /api/v1/ads/acl; Attributes: [authenticated]
-2019-01-17 11:38:01.917 DEBUG 16360 --- [main] o.s.s.w.a.i.FilterSecurityInterceptor    : Previously Authenticated: com.sap.cloud.security.xsuaa.token.AuthenticationToken@e69e23c2: Principal: user/userIdp/adOwner; Credentials: [PROTECTED]; Authenticated: true; Details: org.springframework.security.web.authentication.WebAuthenticationDetails@957e: RemoteIpAddress: 127.0.0.1; SessionId: null; Granted Authorities: ATTR:BULLETINBOARD=IL_RAA03_Board, ATTR:LOCATION=DE
-2019-01-17 11:38:01.917 DEBUG 16360 --- [ main] o.s.s.access.vote.AffirmativeBased       : Voter: org.springframework.security.web.access.expression.WebExpressionVoter@63e17053, returned: 1
-2019-01-17 11:38:01.917 DEBUG 16360 --- [main] o.s.s.w.a.i.FilterSecurityInterceptor    : Authorization successful
-2019-01-17 11:38:32.228  INFO 16360 --- [main] com.sap.cp.appsec.config.AclAuditLogger  : CREATED ACE: AccessControlEntryImpl[id: 100000005024; granting: true; sid: PrincipalSid[user/userIdp/adOwner]; permission: BasePermission[...............................R=1]; auditSuccess: true; auditFailure: true]
-2019-01-17 11:38:32.228  INFO 16360 --- [main] com.sap.cp.appsec.config.AclAuditLogger  : CREATED ACE: AccessControlEntryImpl[id: 100000005025; granting: true; sid: PrincipalSid[user/userIdp/adOwner]; permission: BasePermission[..............................W.=2]; auditSuccess: true; auditFailure: true]
-2019-01-17 11:38:32.228  INFO 16360 --- [main] com.sap.cp.appsec.config.AclAuditLogger  : CREATED ACE: AccessControlEntryImpl[id: 100000005026; granting: true; sid: PrincipalSid[user/userIdp/adOwner]; permission: BasePermission[...........................A....=16]; auditSuccess: true; auditFailure: true]
-2019-01-17 11:38:32.249 DEBUG 16360 --- [main] s.s.w.c.SecurityContextPersistenceFilter : SecurityContextHolder now cleared, as request processing completed
+DEBUG 16360 --- o.s.s.w.a.i.FilterSecurityInterceptor    : Secure object: FilterInvocation: URL: /api/v1/ads/acl; Attributes: [authenticated]
+DEBUG 16360 --- o.s.s.w.a.i.FilterSecurityInterceptor    : Previously Authenticated: com.sap.cloud.security.xsuaa.token.AuthenticationToken@e69e23c2: Principal: user/userIdp/adOwner; Credentials: [PROTECTED]; Authenticated: true; Details: org.springframework.security.web.authentication.WebAuthenticationDetails@957e: RemoteIpAddress: 127.0.0.1; SessionId: null; Granted Authorities: ATTR:BULLETINBOARD=IL_RAA03_Board, ATTR:LOCATION=DE
+DEBUG 16360 --- o.s.s.access.vote.AffirmativeBased       : Voter: org.springframework.security.web.access.expression.WebExpressionVoter@63e17053, returned: 1
+DEBUG 16360 --- o.s.s.w.a.i.FilterSecurityInterceptor    : Authorization successful
+ INFO 16360 --- com.sap.cp.appsec.config.AclAuditLogger  : CREATED ACE: AccessControlEntryImpl[id: 100000005024; granting: true; sid: PrincipalSid[user/userIdp/adOwner]; permission: BasePermission[...............................R=1]; auditSuccess: true; auditFailure: true]
+ INFO 16360 --- com.sap.cp.appsec.config.AclAuditLogger  : CREATED ACE: AccessControlEntryImpl[id: 100000005025; granting: true; sid: PrincipalSid[user/userIdp/adOwner]; permission: BasePermission[..............................W.=2]; auditSuccess: true; auditFailure: true]
+ INFO 16360 --- com.sap.cp.appsec.config.AclAuditLogger  : CREATED ACE: AccessControlEntryImpl[id: 100000005026; granting: true; sid: PrincipalSid[user/userIdp/adOwner]; permission: BasePermission[...........................A....=16]; auditSuccess: true; auditFailure: true]
+DEBUG 16360 --- s.s.w.c.SecurityContextPersistenceFilter : SecurityContextHolder now cleared, as request processing completed
 ```
 For the POST-request the user must only be authenticated (see [WebSecurityConfig](src/main/java/com/sap/cp/appsec/config/WebSecurityConfig.java)), additionally we log the creation of the three ACEs that provides the owner of the created advertisement these access permissions: read, write and admin.
 
 #### Example logs when Advertisement owner grants permission to another user
 ```
-2019-01-17 11:38:32.273 DEBUG 16360 --- [main] o.s.s.w.u.matcher.AntPathRequestMatcher  : Checking match of request : '/api/v1/ads/acl/grantPermissionsToUser/1'; against '/api/v1/ads/acl/**'
-2019-01-17 11:38:32.273 DEBUG 16360 --- [main] o.s.s.w.a.i.FilterSecurityInterceptor    : Secure object: FilterInvocation: URL: /api/v1/ads/acl/grantPermissionsToUser/1; Attributes: [authenticated]
-2019-01-17 11:38:32.273 DEBUG 16360 --- [main] o.s.s.w.a.i.FilterSecurityInterceptor    : Previously Authenticated: com.sap.cloud.security.xsuaa.token.AuthenticationToken@810322a0: Principal: user/userIdp/adOwner; Credentials: [PROTECTED]; Authenticated: true; Details: org.springframework.security.web.authentication.WebAuthenticationDetails@957e: RemoteIpAddress: 127.0.0.1; SessionId: null; Granted Authorities: ATTR:BULLETINBOARD=IL_RAA03_Board, ATTR:LOCATION=DE
+DEBUG 16360 --- o.s.s.w.u.matcher.AntPathRequestMatcher  : Checking match of request : '/api/v1/ads/acl/grantPermissionsToUser/1'; against '/api/v1/ads/acl/**'
+DEBUG 16360 --- o.s.s.w.a.i.FilterSecurityInterceptor    : Secure object: FilterInvocation: URL: /api/v1/ads/acl/grantPermissionsToUser/1; Attributes: [authenticated]
+DEBUG 16360 --- o.s.s.w.a.i.FilterSecurityInterceptor    : Previously Authenticated: com.sap.cloud.security.xsuaa.token.AuthenticationToken@810322a0: Principal: user/userIdp/adOwner; Credentials: [PROTECTED]; Authenticated: true; Details: org.springframework.security.web.authentication.WebAuthenticationDetails@957e: RemoteIpAddress: 127.0.0.1; SessionId: null; Granted Authorities: ATTR:BULLETINBOARD=IL_RAA03_Board, ATTR:LOCATION=DE
 ... 
-2019-01-17 11:38:32.282 DEBUG 16360 --- [main] o.s.s.a.i.a.MethodSecurityInterceptor    : Secure object: ReflectiveMethodInvocation: public void com.sap.cp.appsec.services.AdvertisementService.grantPermissions(java.lang.Long,java.lang.String,org.springframework.security.acls.model.Permission[]); target is of class [com.sap.cp.appsec.services.AdvertisementService]; Attributes: [[authorize: 'hasPermission(#id, 'com.sap.cp.appsec.domain.Advertisement', 'administration')', filter: 'null', filterTarget: 'null']]
-2019-01-17 11:38:32.282 DEBUG 16360 --- [main] o.s.s.a.i.a.MethodSecurityInterceptor    : Previously Authenticated: com.sap.cloud.security.xsuaa.token.AuthenticationToken@e774a5e7: Principal: user/userIdp/adOwner; Credentials: [PROTECTED]; Authenticated: true; Details: org.springframework.security.web.authentication.WebAuthenticationDetails@957e: RemoteIpAddress: 127.0.0.1; SessionId: null; Granted Authorities: ATTR:BULLETINBOARD=IL_RAA03_Board, ATTR:LOCATION=DE
-2019-01-17 11:38:32.284 DEBUG 16360 --- [main] o.s.s.acls.AclPermissionEvaluator        : Checking permission 'administration' for object 'org.springframework.security.acls.domain.ObjectIdentityImpl[Type: com.sap.cp.appsec.domain.Advertisement; Identifier: 1]'
-2019-01-17 11:38:32.285  INFO 16360 --- [main] com.sap.cp.appsec.config.AclAuditLogger  : GRANTED due to ACE: AccessControlEntryImpl[id: 100000005026; granting: true; sid: PrincipalSid[user/userIdp/adOwner]; permission: BasePermission[...........................A....=16]; auditSuccess: true; auditFailure: true]
-2019-01-17 11:38:32.285 DEBUG 16360 --- [main] o.s.s.acls.AclPermissionEvaluator        : Access is granted
-2019-01-17 11:38:32.285 DEBUG 16360 --- [main] o.s.s.access.vote.AffirmativeBased       : Voter: org.springframework.security.access.prepost.PreInvocationAuthorizationAdviceVoter@4f3891db, returned: 1
-2019-01-17 11:38:32.285 DEBUG 16360 --- [main] o.s.s.a.i.a.MethodSecurityInterceptor    : Authorization successful
+DEBUG 16360 --- o.s.s.a.i.a.MethodSecurityInterceptor    : Secure object: ReflectiveMethodInvocation: public void com.sap.cp.appsec.services.AdvertisementService.grantPermissions(java.lang.Long,java.lang.String,org.springframework.security.acls.model.Permission[]); target is of class [com.sap.cp.appsec.services.AdvertisementService]; Attributes: [[authorize: 'hasPermission(#id, 'com.sap.cp.appsec.domain.Advertisement', 'administration')', filter: 'null', filterTarget: 'null']]
+DEBUG 16360 --- o.s.s.a.i.a.MethodSecurityInterceptor    : Previously Authenticated: com.sap.cloud.security.xsuaa.token.AuthenticationToken@e774a5e7: Principal: user/userIdp/adOwner; Credentials: [PROTECTED]; Authenticated: true; Details: org.springframework.security.web.authentication.WebAuthenticationDetails@957e: RemoteIpAddress: 127.0.0.1; SessionId: null; Granted Authorities: ATTR:BULLETINBOARD=IL_RAA03_Board, ATTR:LOCATION=DE
+DEBUG 16360 --- o.s.s.acls.AclPermissionEvaluator        : Checking permission 'administration' for object 'org.springframework.security.acls.domain.ObjectIdentityImpl[Type: com.sap.cp.appsec.domain.Advertisement; Identifier: 1]'
+ INFO 16360 --- com.sap.cp.appsec.config.AclAuditLogger  : GRANTED due to ACE: AccessControlEntryImpl[id: 100000005026; granting: true; sid: PrincipalSid[user/userIdp/adOwner]; permission: BasePermission[...........................A....=16]; auditSuccess: true; auditFailure: true]
+DEBUG 16360 --- o.s.s.acls.AclPermissionEvaluator        : Access is granted
+DEBUG 16360 --- o.s.s.access.vote.AffirmativeBased       : Voter: org.springframework.security.access.prepost.PreInvocationAuthorizationAdviceVoter@4f3891db, returned: 1
+DEBUG 16360 --- o.s.s.a.i.a.MethodSecurityInterceptor    : Authorization successful
 ... 
-2019-01-17 11:38:32.285  INFO 16360 --- [main] com.sap.cp.appsec.config.AclAuditLogger  : GRANTED due to ACE: AccessControlEntryImpl[id: 100000005026; granting: true; sid: PrincipalSid[user/userIdp/adOwner]; permission: BasePermission[...........................A....=16]; auditSuccess: true; auditFailure: true]
-2019-01-17 11:38:32.285  INFO 16360 --- [main] com.sap.cp.appsec.config.AclAuditLogger  : GRANTED due to ACE: AccessControlEntryImpl[id: 100000005026; granting: true; sid: PrincipalSid[user/userIdp/adOwner]; permission: BasePermission[...........................A....=16]; auditSuccess: true; auditFailure: true]
-2019-01-17 11:38:32.292  INFO 16360 --- [main] com.sap.cp.appsec.config.AclAuditLogger  : CREATED ACE: AccessControlEntryImpl[id: 100000005030; granting: true; sid: PrincipalSid[user/userIdp/anyone]; permission: BasePermission[...........................A....=16]; auditSuccess: true; auditFailure: true]
-2019-01-17 11:38:32.293  INFO 16360 --- [main] com.sap.cp.appsec.config.AclAuditLogger  : CREATED ACE: AccessControlEntryImpl[id: 100000005031; granting: true; sid: PrincipalSid[user/userIdp/anyone]; permission: BasePermission[...............................R=1]; auditSuccess: true; auditFailure: true]
-2019-01-17 11:38:32.296 DEBUG 16360 --- [main] s.s.w.c.SecurityContextPersistenceFilter : SecurityContextHolder now cleared, as request processing completed
+ INFO 16360 --- com.sap.cp.appsec.config.AclAuditLogger  : GRANTED due to ACE: AccessControlEntryImpl[id: 100000005026; granting: true; sid: PrincipalSid[user/userIdp/adOwner]; permission: BasePermission[...........................A....=16]; auditSuccess: true; auditFailure: true]
+ INFO 16360 --- com.sap.cp.appsec.config.AclAuditLogger  : GRANTED due to ACE: AccessControlEntryImpl[id: 100000005026; granting: true; sid: PrincipalSid[user/userIdp/adOwner]; permission: BasePermission[...........................A....=16]; auditSuccess: true; auditFailure: true]
+ INFO 16360 --- com.sap.cp.appsec.config.AclAuditLogger  : CREATED ACE: AccessControlEntryImpl[id: 100000005030; granting: true; sid: PrincipalSid[user/userIdp/otherOne]; permission: BasePermission[...........................A....=16]; auditSuccess: true; auditFailure: true]
+ INFO 16360 --- com.sap.cp.appsec.config.AclAuditLogger  : CREATED ACE: AccessControlEntryImpl[id: 100000005031; granting: true; sid: PrincipalSid[user/userIdp/otherOne]; permission: BasePermission[...............................R=1]; auditSuccess: true; auditFailure: true]
+DEBUG 16360 --- s.s.w.c.SecurityContextPersistenceFilter : SecurityContextHolder now cleared, as request processing completed
 ```
-For the PUT-request `/api/v1/ads/acl/grantPermissionsToUser/{advertisementId}` the user must be authenticated (see [WebSecurityConfig](src/main/java/com/sap/cp/appsec/config/WebSecurityConfig.java)) and the hasAuthority() method checks, whether the user has admin permissions. As it changes the given ACL for an existing advertisment the admin permission is again checked before the new ACEs are persisted. Additionally we log the creation of the ACEs that provides another user (here: `anyone`) these access permissions: admin and read.
+For the PUT-request `/api/v1/ads/acl/grantPermissionsToUser/{advertisementId}` the user must be authenticated (see [WebSecurityConfig](src/main/java/com/sap/cp/appsec/config/WebSecurityConfig.java)). Then the `@PreAuthorize` method security expression checks, whether the user has admin permissions. Finally, as the given ACL for an existing advertisment is changed the admin permission is again checked before the new ACEs are persisted. Additionally we log the creation of the ACEs that provides another user (here: `otherOne`) these access permissions: admin and read.
 
- 
-### Performance
-  - `ACL_OBJECT_IDENTITY`: 1 entry per managed instance
-  - `ACL_ENTRY`: instance * SID (Individual User or AttributeKeyValue) * permission (action)
-
+### Breakpoints for troubleshoot
+- AclPermissionEvaluator.hasPermission
+- AclImpl.isGranted
 
 ### Other requirements to Access Control Concepts not discussed here
 - Dual control principle. Example: an advertisement can only be published, when another user (with role...) has approved it.
 - Time-based access control. Example: A user has only access granted in a dedicated time-period, like a representative. This person should not be able to access instances that were created/updated in a time period before or after time period.
-
 
 ## <a name="features"></a>Notable Features
  - REST endpoints using Spring Web MVC (`@RestController`)
  - Tests (Servlet with `RestTemplate`, `MockMvc`, JUnit, Mockito, Hamcrest
  - JPA Implementation: Hibernate
  - Spring Data (repository)
- - Security with Spring Security and XS-UAA
+ - Security with Spring Security and Xsuaa
  - Spring Security ACL, setup database schema using Liquibase
 
-# <a name="furtherReading"></a>Further Learning Material
+# <a name="furtherReading"></a>Further References
+- [Github: spring-projects/spring-security](https://github.com/spring-projects/spring-security)
+- [Github: SAP Container Security Library (Java)](https://github.com/SAP/cloud-security-xsuaa-integration)
+- [Spring.io: Domain Object Security (ACLs)](https://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#domain-acls)
+- [Spring.io: ACL database schema](https://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#dbschema-acl)
 - [openSAP course: Cloud-Native Development with SAP Cloud Platform](https://open.sap.com/courses/cp5)
 - [Baeldung tutorial: Introduction to Spring Security ACL](https://www.baeldung.com/spring-security-acl)
-- [Baeldung tutorial: A Custom Security Expression with Spring Security](https://www.baeldung.com/spring-security-create-new-custom-security-expression)
-- [Spring Security Docs: Expression-Based Access Control](https://docs.spring.io/spring-security/site/docs/current/reference/html/el-access.html)
