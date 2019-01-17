@@ -59,9 +59,7 @@ public class AdvertisementService {
                 Advertisement.class.getName(),
                 savedAds.getId(),
                 userName,
-                new Permission[]{BasePermission.READ, BasePermission.WRITE, BasePermission.ADMINISTRATION}); //TODO Admin only is not enough
-
-        logger.debug("successfully granted permissions (16,2,1) to the advertisement owner: " + userName);
+                new Permission[]{BasePermission.READ, BasePermission.WRITE, BasePermission.ADMINISTRATION});
 
         return savedAds;
     }

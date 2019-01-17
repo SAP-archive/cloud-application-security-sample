@@ -69,6 +69,7 @@ public class AdvertisementAclController {
         result.put("given name", token.getGivenName());
         result.put("email", token.getEmail());
         result.put("token", token.getAppToken());
+        result.put("authorizations", token.getAuthorities().toString());
 
         return result;
     }
