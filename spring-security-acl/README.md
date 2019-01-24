@@ -321,7 +321,7 @@ Go to the [SAP Cloud Platform Cloud Cockpit](https://account.hanatrial.ondemand.
 - Then navigate to your Subaccount and create a Role Collection e.g. `RC_GroupMember_MY_TEAM` and add the created Role.
 - Finally, as part of your Identity Provider, e.g. SAP ID Service, assign the created Role Collection to your user.
 
-Note: further up-to-date information you can get on sap.help.com: [Maintain Roles for Applications](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/7596a0bdab4649ac8a6f6721dc72db19.html))
+Note: further up-to-date information you can get on sap.help.com: [Maintain Roles for Applications](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/7596a0bdab4649ac8a6f6721dc72db19.html).
 
 ### Test the deployed application
 Open a browser to test whether your microservice runs in the cloud. For this use the approuter URL, e.g. `https://<<your tenant>>-approuter-<<ID>>.<<LANDSCAPE_APPS_DOMAIN>>/ads/actuator/health`. This will bring you the **login page**. Note: You have to enter here your SAP Cloud Identity credentials. After successful login you get redirected to the advertisement service that returns you the status of the application.
@@ -335,11 +335,11 @@ Find a step-by-step description on how to test using `Postman` [here](https://gi
 <a id='notes'></a>
 # Implementation Details
 
-1. Setup Spring ACL database table (using liquibase): [database changelog](src/main/resources/db.changelog), [database population](src/main/resources/db.population)
+1. Setup Spring ACL database table (using liquibase): [database changelog](src/main/resources/db/changelog), [database population](src/main/resources/db/population)
 1. Configure Spring ACL: [AclConfig](src/main/java/com/sap/cp/appsec/config/AclConfig.java) and [AclAuditLogger](src/main/java/com/sap/cp/appsec/config/AclAuditLogger.java)
 1. Convenience wrapper for Spring `AclService` implementation: [AclSupport](https://github.wdf.sap.corp/CPSecurity/cp-application-security/blob/master/spring-security-acl/src/main/java/com/sap/cp/appsec/security/AclSupport.java)
 1. Assign user's attributes to Spring Security Context: [CustomTokenAuthorizationsExtractor](src/main/java/com/sap/cp/appsec/security/CustomTokenAuthorizationsExtractor.java).
-1. Assign and validate instance permissions: [AdvertisementService](src/main/java/com/sap/cp/appsec/controllers/AdvertisementService.java).
+1. Assign and validate instance permissions: [AdvertisementService](src/main/java/com/sap/cp/appsec/services/AdvertisementService.java).
 1. Support of pagination is implemented with Spring Data and SQL CE functions: [AdvertisementAclRepository](src/main/java/com/sap/cp/appsec/domain/AdvertisementAclRepository.java)
 1. The application should support values-request for the application-specific `xs.user.attributes`, e.g. `/api/v1/attribute/group` : [AttributeFinderController](src/main/java/com/sap/cp/appsec/controllers/AttributeFinderController.java).
 1. Application security model consists of role-templates with references to attributes only: [xs-security.json](security/xs-security.json)
