@@ -14,6 +14,7 @@ public class CustomTokenAuthorizationsExtractor extends TokenAuthenticationConve
 
     public CustomTokenAuthorizationsExtractor(String appId, AclAttribute... aclAttributes) {
         super(appId);
+        setLocalScopeAsAuthorities(true);
         this.aclAttributes = aclAttributes;
     }
 

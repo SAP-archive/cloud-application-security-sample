@@ -14,18 +14,9 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.1.0.RELEASE</version>
+        <version>2.1.0.RELEASE</version> <!-- 2.1.1 introduce issue with 'com.zaxxer.hikari.HikariDataSource' -->
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <!-- https://repo.spring.io/libs-snapshot/ -->
-    <repositories>
-        <repository>
-            <id>spring-snapshot-repo</id>
-            <name>Spring Snapshot Repository</name>
-            <url>https://repo.spring.io/libs-snapshot/</url>
-        </repository>
-    </repositories>
-
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -67,11 +58,16 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.sap.cloud.security.xsuaa</groupId>
-            <artifactId>api</artifactId>
-            <version>${sap.cloud.security.version}</version>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-jose</artifactId>
+            <version>${spring.security.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-resource-server</artifactId>
+            <version>${spring.security.version}</version>
+        </dependency>
+       <dependency>
             <groupId>com.sap.cloud.security.xsuaa</groupId>
             <artifactId>spring-xsuaa</artifactId>
             <version>${sap.cloud.security.version}</version>

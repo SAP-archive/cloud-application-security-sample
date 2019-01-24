@@ -8,12 +8,18 @@ The microservice is adapted from the code developed in the [openSAP course: Clou
 
 ## Table of Contents
 This document is divided into the following sections
- - [Motivation](#motivation)
- - [Comparison of the Filter Approach with the ACL Approach](#comparison)
- - [Examples / Use Cases](#examples) - Use cases and how Spring ACL helps
- - [Setup and Start](#setupandstart) - a description of how to use this project
- - [Implementation Details](#notes) - dig into details of its implementation, configuration 
- - [Further Learning Material](#furtherReading) - references and further learning material
+
+- [Description](#description) - understand when and how Spring Security ACL helps
+  - [Motivation](#motivation)
+  - [Comparison of the Filter Approach with the ACL Approach](#comparison)
+  - [Examples / Use Cases](#examples)
+- [Requirements](#requirements) - list of requirements
+- [Download and Installation](#setupandstart) - a detailed description of how to use this project
+- [Implementation Details](#notes) - dig into details of its implementation, configuration, notable features
+- [Further Learning Material](#furtherReading) - references and further learning material
+
+<a id='description'></a>
+# Description
 
 <a id='motivation'></a>
 ## Motivation
@@ -190,26 +196,29 @@ User with "admin" permission for an advertisement can remove permissions to it f
 
 After this the related entries for the principal user (sid) should disappear from the `ACL_ENTRY` table.
 
+<a id='requirements'></a>
+# Requirements
+In order to deploy it to Cloud Foundry you need to meet the following requirements:
+- Cloud Foundry client 6.42 or later
+- Recommended Rest API testing tools: Chrome web browser, Postman Chrome Plugin and Postman Interceptor Chrome Plugin
 
+In case you want to run and debug the application locally the following requirements needs to be met as well:
+- Java 8 JDK
+- Docker
+- Eclipse IDE
 
-# <a name="setupandstart"></a>Setup and Start
+# <a name="setupandstart"></a>Download and Installation
 ## Prerequisites
-Setup your development environment with at least java, maven, docker ... as explained [here](/prerequisites/README.md). 
+Setup your development environment according to the description [here](/prerequisites/README.md).
 
+## Prepare local environment
+The application is setup to connect to a PostgreSQL database, which is provided as part of a docker container.
+For this, the local system environment variable `VCAP_SERVICES` must contain the corresponding database connection information.
 
-### Prepare local environment
-
-The application is setup to connect to a PostgreSQL database.
-
-For this, the local system environment variable `VCAP_SERVICES` must contain the corresponding connection information.
-The provided `localEnvironmentSetup.bat` script can be used to set the necessary values. Within your development IDE (Eclipse, IntelliJ), you need to define the `SPRING_PROFILES_ACTIVE`, `VCAP_SERVICES` and `VCAP_APPLICATION` environment variable as done in this script.
-
-Replace in your `spring-security-acl` project any occurence of `d012345` or `D012345` by your SAP Account User Name.
-
-## Run the application in your local environment
+### Start PostgreSQL database
 Make sure that PostgreSQL is running on the local machine, as referenced in `VCAP_SERVICES`. 
 
-The `docker-compose.yml` specifies all required docker containers.   
+The `docker-compose.yml` specifies all required docker containers.
 In order to start a fresh database container with postgresql, execute 
 ```bash
 docker-compose up -d
@@ -251,7 +260,7 @@ You can import the [Postman collection](documentation/testing/spring-acl-local.p
 ## Steps to deploy to Cloud Foundry
 
 ### Build Advertisement Service (our Java application)
-Build the Advertisement Service which is a Java web application running in a Java VM. Maven build tool compiles the code and packages it in its distributable format, such as a `JAR` (Java Archive). With this the maven dependencies are downloaded from the SAP internal Nexus registry and are copied into the directory `~/.m2/repository`. Furthermore the JUnit tests (unit tests and component tests) are executed and the `target/demo-application-security-acl.jar` is created. 
+Build the Advertisement Service which is a Java web application running in a Java VM. Maven build tool compiles the code and packages it in its distributable format, such as a `JAR` (Java Archive). With this the maven dependencies are downloaded from the [Maven central](https://search.maven.org/) into the `~/.m2/repository` directory. Furthermore the JUnit tests (unit tests and component tests) are executed and the `target/demo-application-security-acl.jar` is created.
 
 Execute in the command line (within project directory, which contains the`pom.xml`):
 ```
@@ -260,17 +269,17 @@ Execute in the command line (within project directory, which contains the`pom.xm
 ... or `mvnw package` in Windows command line.
 
 ### Login to Cloud Foundry
-Make sure your are logged in to Cloud Foundry and you target your trial space.  
+Make sure your are logged in to Cloud Foundry and you target your trial space.
 The following commands will setup your environment to use the provided Cloud Foundry instance.
 
  - `cf api <<Your API endpoint>>`
  - `cf login -u <<your user id>>`
  - In case you are assigned to multiple orgs, select the `trial` organisation.
 
-To find the API end point, please refer the [documentation]( https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/350356d1dc314d3199dca15bd2ab9b0e.html)
+To find the API end point, please refer the [documentation](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/350356d1dc314d3199dca15bd2ab9b0e.html).
 
 
-### Create Services
+### Create services
 Create the (backing) services that are specified in the [`manifest.yml`](manifest.yml).
 
 Execute in terminal (within project directory, which contains the `security` folder):
@@ -280,25 +289,26 @@ cf create-service xsuaa application uaa-bulletinboard -c security/xs-security.js
 ```
 > Using the marketplace (`cf m`) you can see the backing services and its plans that are available on SAP CP and (!) you are entitled to use.
 
- 
-### Deploy the approuter and the advertisement service
-As a prerequisite step open the `manifest.yml` and replace the d-user by your sap user, to make the routes unique.
+### Configure the manifest
+As a prerequisite step open the [../vars.yml](../vars.yml) file locally and replace the `ID` for example by your SAP account user name, to make the routes unique. You might want to adapt the `LANDSCAPE_APPS_DOMAIN` as well.
 
+### Deploy the approuter and the advertisement service
 The application can be built and pushed using these commands (within root directory, which contains the`manifest.yml`):
 ```
-cf push -f manifest.yml
+cf push --vars-file ../vars.yml
 ```
-The application will be pushed using the settings in the provided in `manifest.yml`. You can get the exact urls/routes that have been assigned to the application with `cf apps`.
+> The application will be pushed using the settings provided in the `manifest.yml` and `../vars.yml`. You can get the exact urls/routes of your deployed application with `cf apps`.
 
-### Create approuter route per tenant id
-We make use of the `trial` subaccount. As you can see in the SAP CP Cockpit subaccounts have properties (see *Subaccount Details*) which of the most important one is the **Subdomain**. The Subdomain serves as the value for the technical property Tenant ID (e.g. "d012345trial").
+### Create approuter route per tenant ID
+We make use of the `trial` subaccount. As you can see in the SAP CP Cockpit subaccounts have properties (see *Subaccount Details*) which of the most important one is the **Subdomain**. The Subdomain serves as the value for the technical property Tenant ID.
 
-The Tenant ID is encoded in the url, for example `https://<tenantId>-<approuter>.<domain>`. That's why we need to specify per Tenant ID (subdomain name) an approuter route:
+The Tenant ID is encoded in the url, for example `https://<<your tenant>>-approuter-<<ID>>.<<LANDSCAPE_APPS_DOMAIN>>`.
+That's why we need to specify an approuter route per Tenant ID (subdomain name), e.g. `p012345trial`. For example:
 ```
-cf map-route approuter-d012345 cfapps.sap.hana.ondemand.com -n d012345trial-approuter-d012345
+cf map-route approuter <<LANDSCAPE_APPS_DOMAIN>> -n <<your tenant>>-approuter-<<ID>>
 ```
 
-> Note: the `TENANT_HOST_PATTERN` environment variable ( see `manifest.yml` file) specifies how the approuter should derive the tenant from the URL.
+> Note: the `TENANT_HOST_PATTERN` environment variable (see `manifest.yml` file) specifies how the approuter should derive the tenant ID from the URL.
 
 ### Cockpit administration tasks
 Go to the [SAP Cloud Platform Cloud Cockpit](https://account.hanatrial.ondemand.com/#/home/welcome)
@@ -314,16 +324,16 @@ Go to the [SAP Cloud Platform Cloud Cockpit](https://account.hanatrial.ondemand.
 Note: further up-to-date information you can get on sap.help.com: [Maintain Roles for Applications](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/7596a0bdab4649ac8a6f6721dc72db19.html))
 
 ### Test the deployed application
-Open a browser to test whether your microservice runs in the cloud. For this use the approuter URL, e.g. `https://d012345trial-approuter-d012345.cfapps.<<region>>.hana.ondemand.com/ads/actuator/health`. This will bring you the **login page**. Note: You have to enter here your SAP Cloud Identity credentials. After successful login you get redirected to the advertisement service that returns you the status of the application.
+Open a browser to test whether your microservice runs in the cloud. For this use the approuter URL, e.g. `https://<<your tenant>>-approuter-<<ID>>.<<LANDSCAPE_APPS_DOMAIN>>/ads/actuator/health`. This will bring you the **login page**. Note: You have to enter here your SAP Cloud Identity credentials. After successful login you get redirected to the advertisement service that returns you the status of the application.
 
 This [`xs-app.json`](src/main/approuter/xs-app.json) file specifies how the approuter routes are mapped to the advertisement routes.
 
-Test the deployed REST Service on Cloud Foundry via the approuter url using the `Postman` chrome plugin together with the `Postman Interceptor` chrome plugin. You can import the [Postman collection](documentation/testing/spring-acl-cloudfoundry.postman_collection.json) and create an environment, which specifies the key-value pair `approuterUri`=`https://<<your tenant>>-approuter-<<your user id>>.cfapps.<<region>>.hana.ondemand.com`. 
+Test the deployed REST Service on Cloud Foundry via the approuter url using the `Postman` chrome plugin together with the `Postman Interceptor` chrome plugin. You can import the [Postman collection](documentation/testing/spring-acl-cloudfoundry.postman_collection.json) and create an environment, which specifies the key-value pair `approuterUri`=`https://<<your tenant>>-approuter-<<ID>>.<<LANDSCAPE_APPS_DOMAIN>>`.
 
 Find a step-by-step description on how to test using `Postman` [here](https://github.com/SAP/cloud-bulletinboard-ads/blob/Documentation/Security/Exercise_24_MakeYourApplicationSecure.md).
 
 <a id='notes'></a>
-## Implementation Details 
+# Implementation Details
 
 1. Setup Spring ACL database table (using liquibase): [database changelog](src/main/resources/db.changelog), [database population](src/main/resources/db.population)
 1. Configure Spring ACL: [AclConfig](src/main/java/com/sap/cp/appsec/config/AclConfig.java) and [AclAuditLogger](src/main/java/com/sap/cp/appsec/config/AclAuditLogger.java)
@@ -347,7 +357,7 @@ With Spring ACL you can reject unauthorized access of instances on method level 
 
 As consequence we have implemented as part of our Spring Data repository our own SQL CE function to fetch only these instances from the database, the user has granted access to.
 
-[Example `PagingAndSortingRepository` Implementation of Spring Data](src/main/java/com/sap/cp/appsec/domain/AdvertisementAclRepository.java)
+**Example**: [Spring Data repository implementation](src/main/java/com/sap/cp/appsec/domain/AdvertisementAclRepository.java).
 
 
 ### (Audit) logging
@@ -360,7 +370,7 @@ Additionlly note that `AuditLogger.logIfNeeded(isGranted, ace)` with `isGranted=
 
 Therefore we suggest to enhance your audit logger implementation in order to handle other audit relevant *events".
 
-[Example Implementation of AuditLogger](src/main/java/com/sap/cp/appsec/config/AclAuditLogger.java).
+**Example**: [Implementation of AuditLogger](src/main/java/com/sap/cp/appsec/config/AclAuditLogger.java).
 
 
 #### Example logs when Advertisement is created and ACL is instantiated 
@@ -396,17 +406,19 @@ DEBUG 16360 --- o.s.s.a.i.a.MethodSecurityInterceptor    : Authorization success
  INFO 16360 --- com.sap.cp.appsec.config.AclAuditLogger  : CREATED ACE: AccessControlEntryImpl[id: 100000005031; granting: true; sid: PrincipalSid[user/userIdp/otherOne]; permission: BasePermission[...............................R=1]; auditSuccess: true; auditFailure: true]
 DEBUG 16360 --- s.s.w.c.SecurityContextPersistenceFilter : SecurityContextHolder now cleared, as request processing completed
 ```
+
 For the PUT-request `/api/v1/ads/acl/grantPermissionsToUser/{advertisementId}` the user must be authenticated (see [WebSecurityConfig](src/main/java/com/sap/cp/appsec/config/WebSecurityConfig.java)). Then the `@PreAuthorize` method security expression checks, whether the user has admin permissions. Finally, as the given ACL for an existing advertisment is changed the admin permission is again checked before the new ACEs are persisted. Additionally we log the creation of the ACEs that provides another user (here: `otherOne`) these access permissions: admin and read.
 
 ### Breakpoints for troubleshoot
 - AclPermissionEvaluator.hasPermission
 - AclImpl.isGranted
 
+
 ### Other requirements to Access Control Concepts not discussed here
 - Dual control principle. Example: an advertisement can only be published, when another user (with role...) has approved it.
 - Time-based access control. Example: A user has only access granted in a dedicated time-period, like a representative. This person should not be able to access instances that were created/updated in a time period before or after time period.
 
-## <a name="features"></a>Notable Features
+### <a name="features"></a>Notable Features
  - REST endpoints using Spring Web MVC (`@RestController`)
  - Tests (Servlet with `RestTemplate`, `MockMvc`, JUnit, Mockito, Hamcrest
  - JPA Implementation: Hibernate

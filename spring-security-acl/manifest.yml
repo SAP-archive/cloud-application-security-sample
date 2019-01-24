@@ -1,8 +1,14 @@
 ---
+# Configuration:
+# configured for EU10. For other landscapes, please adopt LANDSCAPE_APPS_DOMAIN in ../vars.yml
+# If the route is occupied, you might need to change ID in ../vars.yml as well
 applications:
-- name: bulletinboard-ads-d012345
+- name: bulletinboard-ads
+  instances: 1
   memory: 1G
   timeout: 360
+  routes:
+  - route: bulletinboard-ads-((ID)).((LANDSCAPE_APPS_DOMAIN))
   path: target/demo-application-security-acl.jar
   buildpack: https://github.com/cloudfoundry/java-buildpack.git#v4.15
   health-check-type: http
@@ -16,18 +22,20 @@ applications:
   services:
   - postgres-bulletinboard-ads
   - uaa-bulletinboard
-
-- name: approuter-d012345
+# Application Router as web server
+- name: approuter
+  routes:
+  - route: approuter-((ID)).((LANDSCAPE_APPS_DOMAIN))
   path: src/main/approuter
-  buildpack: https://github.com/cloudfoundry/nodejs-buildpack.git#v1.6.30
-  memory: 512M
+  buildpack: https://github.com/cloudfoundry/nodejs-buildpack.git#v1.6.38
+  memory: 128M
   timeout: 360
   env:
-    TENANT_HOST_PATTERN: "^(.*)-approuter-d012345.cfapps.sap.hana.ondemand.com"
+    TENANT_HOST_PATTERN: "^(.*)-approuter-((ID)).((LANDSCAPE_APPS_DOMAIN))"
     destinations: >
       [{
          "name":"ads-destination",
-         "url" :"https://bulletinboard-ads-d012345.cfapps.sap.hana.ondemand.com",
+         "url" :"https://bulletinboard-ads-((ID)).((LANDSCAPE_APPS_DOMAIN))",
          "forwardAuthToken": true}
       ]
   services:

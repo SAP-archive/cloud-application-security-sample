@@ -2,9 +2,11 @@ package com.sap.cp.appsec.config;
 
 import com.sap.cloud.security.xsuaa.XsuaaServiceConfigurationDefault;
 import com.sap.cloud.security.xsuaa.XsuaaServicePropertySourceFactory;
+import com.sap.cloud.security.xsuaa.token.TokenAuthenticationConverter;
 import com.sap.cloud.security.xsuaa.token.authentication.XsuaaJwtDecoderBuilder;
 import com.sap.cp.appsec.domain.AclAttribute;
 import com.sap.cp.appsec.security.CustomTokenAuthorizationsExtractor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -22,47 +24,49 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 @PropertySource(factory = XsuaaServicePropertySourceFactory.class, value = {""})
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private XsuaaServiceConfigurationDefault xsuaaServiceConfiguration;
+	@Autowired
+	private XsuaaServiceConfigurationDefault xsuaaServiceConfiguration;
 
-    public WebSecurityConfig(XsuaaServiceConfigurationDefault xsuaaServiceConfiguration) {
-        this.xsuaaServiceConfiguration = xsuaaServiceConfiguration;
-    }
+	// configure Spring Security, demand authentication and specific scopes
+	@Override
+	public void configure(HttpSecurity http) throws Exception {
 
-    // configure Spring Security, demand authentication and specific scopes
-    @Override
-    public void configure(HttpSecurity http) throws Exception {
+		// @formatter:off
+		http
+			.sessionManagement()
+			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+			.and()
+				.authorizeRequests()
+				// enable OAuth2 checks
+				.antMatchers("/swagger-ui.html", "/swagger-resources/**", "/v2/api-docs", "/webjars/**", "/api-docs/**").permitAll() // this should allow swagger to operate
+				.antMatchers("/**/*.js", "/**/*.json", "/**/*.xml", "/**/*.html").permitAll()
+				// acl endpoints
+				.antMatchers("/api/v1/ads/acl/**").authenticated()
+				// public endpoints
+				.antMatchers("/actuator/**").permitAll()
+				.antMatchers("/api/v1/attribute/**").permitAll()
+				.anyRequest().denyAll() // deny anything not configured above
+			.and()
+				.oauth2ResourceServer()
+				.jwt()
+				.jwtAuthenticationConverter(getJwtAuthoritiesConverter()); // customizes how GrantedAuthority s are derived from a Jwt
+		// @formatter:on
+	}
 
-        // @formatter:off
-        http
-            .sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.NEVER)
-            .and()
-                .authorizeRequests()
-                // enable OAuth2 checks
-                .antMatchers("/swagger-ui.html", "/swagger-resources/**", "/v2/api-docs", "/webjars/**", "/api-docs/**").permitAll() // this should allow swagger to operate
-                .antMatchers("/**/*.js", "/**/*.json", "/**/*.xml", "/**/*.html").permitAll()
-                // acl endpoints
-                .antMatchers("/api/v1/ads/acl/**").authenticated()
-                // other endpoints
-                .antMatchers("/actuator/**").permitAll()
-                .antMatchers("/api/v1/attribute/**").permitAll()
-                .anyRequest().denyAll() // deny anything not configured above
-            .and()
-                .oauth2ResourceServer()
-                .jwt()
-                .decoder(jwtDecoder())
-                .jwtAuthenticationConverter(jwtAuthenticationConverter()); // customizes how GrantedAuthority s are derived from a Jwt
-        // @formatter:on
-    }
+	/**
+	 * Customizes how GrantedAuthority are derived from a Jwt
+	 */
+	Converter<Jwt, AbstractAuthenticationToken> getJwtAuthoritiesConverter() {
+		return new CustomTokenAuthorizationsExtractor(xsuaaServiceConfiguration.getAppId(), AclAttribute.values());
+	}
 
-    // configure offline verification which checks if any provided JWT was properly signed
-    @Bean
-    Converter<Jwt, AbstractAuthenticationToken> jwtAuthenticationConverter() {
-        return new CustomTokenAuthorizationsExtractor(xsuaaServiceConfiguration.getAppId(), AclAttribute.values());
-    }
+	@Bean
+	JwtDecoder jwtDecoder() {
+		return new XsuaaJwtDecoderBuilder(xsuaaServiceConfiguration).build();
+	}
 
-    @Bean
-    JwtDecoder jwtDecoder() {
-        return new XsuaaJwtDecoderBuilder(xsuaaServiceConfiguration).build();
-    }
+	@Bean
+	XsuaaServiceConfigurationDefault xsuaaConfig() {
+		return new XsuaaServiceConfigurationDefault();
+	}
 }
