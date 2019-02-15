@@ -199,13 +199,16 @@ After this the related entries for the principal user (sid) should disappear fro
 <a id='requirements'></a>
 # Requirements
 In order to deploy it to Cloud Foundry you need to meet the following requirements:
-- Cloud Foundry client 6.42 or later
-- Recommended Rest API testing tools: Chrome web browser, Postman Chrome Plugin and Postman Interceptor Chrome Plugin
+- Cloud Foundry client 6.42 or later. You will find installation instructions here: https://docs.cloudfoundry.org/cf-cli/
+- Recommended REST API testing tools: 
+   - Chrome web browser
+   - Postman Chrome Plugin 
+   - Postman Interceptor Chrome Plugin
 
-In case you want to run and debug the application locally the following requirements needs to be met as well:
-- Java 8 JDK
-- Docker
-- Eclipse IDE
+To run and debug the application locally the following tools needs to be installed as well:
+- Java 8 JDK  https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
+- Docker  https://www.docker.com/get-started 
+- An IDE for example Eclipse STS https://spring.io/tools3/sts/all 
 
 # <a name="setupandstart"></a>Download and Installation
 ## Prerequisites
@@ -228,7 +231,7 @@ To tear down all containers, execute:
 docker-compose down
 ```
 
-To run the service locally you have two options: start it directly via Maven on the command line or within Eclipse.
+To run the service you have two options: start it directly via Maven on the command line or within Eclipse.
 
 In both cases, your application will be deployed to an embedded Tomcat web server and is visible at the address `http://localhost:8080/api/v1/ads/acl`.
 
@@ -249,11 +252,11 @@ mvnw spring-boot:run
 In Eclipse Spring Tool Suite (STS) you can import the project as an existing Maven project. There you can start the main method in `com.sap.cp.appsec.Application`.
 You can also right-click on the class in the Package Explorer, and select `Run As` - `Spring Boot App`. Make sure that you have set in the same environment variables in the Run Configuration as specified in the [`localEnvironmentSetup script`](localEnvironmentSetup.bat).
 
-## Test locally using Postman
+## Test using Postman
 The service endpoints are secured, that means no unauthorized user can access the endpoint. The application expects a so called `JWT token` as part of the `Authorization` header of the service that also contains the scope, the user is assigned to.
 
 Test the REST Service `http://localhost:8080/api/v1/ads` manually using the `Postman` chrome extension.
-You can import the [Postman collection](documentation/testing/spring-acl-local.postman_collection.json), as well as the [Postman environment](documentation/testing/spring-acl-local.postman_environment.json) that provides different JWT tokens for the `Authorization` headers to do some sample requests for local execution.
+You can import the [Postman collection](documentation/testing/spring-acl-local.postman_collection.json), as well as the [Postman environment](documentation/testing/spring-acl-local.postman_environment.json) that provides different JWT tokens for the `Authorization` headers to do some sample requests.
 
 **Note**: For all requests make sure, that you provide a header namely `Authorization` with a JWT token as value e.g. `Bearer eyJhbGciOiJSUzI1NiIs...`. You can generate a valid JWT token as described [in Exercise 24](https://github.com/SAP/cloud-bulletinboard-ads/blob/Documentation/Security/Exercise_24_MakeYourApplicationSecure.md#generate-jwt-token).
 
