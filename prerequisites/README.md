@@ -10,9 +10,11 @@
 - [Project Setup](#headline-3)
   - [Clone Git Repository](#headline-3.1)
   - [Import Maven project into Eclipse](#headline-3.2)
+- [Rest API Testing Tools](#headline-4)
 
 <a id="headline-2"></a>
 ## Local Setup
+In case you like to run the example locally, you need to prepare your local system environment. Like the sample code this comes with no warranty and we can not provide support here. For further details see also [LICENCE](LICENCE.pdf) file.
 
 <a id="headline-2.2"></a>
 ### Java 8 JDK
@@ -26,14 +28,10 @@
 ### Maven
 The builds of the individual microservices are managed using Apache Maven.
 
-We make use of [Maven wrapper](https://github.com/takari/maven-wrapper), which is located at [`.mvn/wrapper`](/.mvn/wrapper).
-In the `.mvn/wrapper/maven-wrapper.properties` file, it can be defined which Maven version should be used.
-The wrapper can be executed via the `mvnw` script located at the root of a module (one `cmd` file for Windows and one shell script for Linux/Git Bash).
-It takes care of installing the correct Maven version, so no manual local installation of Maven is required.
+Install and configure Maven as documented [here](https://maven.apache.org/users/index.html).
 
-To use the maven wrapper start a spring boot application, execute
-- **`./mvnw spring-boot:run` (Linux/Git bash)** or
-- **`mvnw spring-boot:run` (Windows)**.
+To test your installation, open a new console and run `mvn --version`.
+
 
 <a id="headline-2.4"></a>
 ### Eclipse IDE
@@ -53,8 +51,9 @@ We recommend to use Eclipse as the following descriptions are tailored for it.
 ### Cloud Foundry Client
 The developed microservices will run on the Cloud Foundry platform.
 
-- Install the Cloud Foundry Command Line Interface (CLI) following [this](https://docs.cloudfoundry.org/cf-cli/install-go-cli.html) guide
-- Create a account as explained in this tutorial: [SAP Cloud Platform: Get a Free Trial Account in Cloud Foundry environment](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/e3d82674bd68448eb85198619aa99b6d.html#42e7e54590424e65969fced1acd47694.html). 
+- Install the Cloud Foundry Command Line Interface (CLI) following [this](https://docs.cloudfoundry.org/cf-cli/install-go-cli.html) guide.
+- Create a account as explained in this tutorial: [SAP Cloud Platform: Get a Free Trial Account in Cloud Foundry environment](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/e3d82674bd68448eb85198619aa99b6d.html#42e7e54590424e65969fced1acd47694.html).
+
 
 <a id="headline-2.7"></a>
 ### Docker
@@ -70,10 +69,11 @@ This requires a restart that may take several minutes to complete.
 
 > Note: Hyper-V interferes with VirtualBox (Hyper-V must to be enabled for Docker, but this [crashes VirtualBox](https://www.virtualbox.org/ticket/16801))
 
-To start all docker containers required for a module, execute `docker-compose up -d` in the directory of the module.
+To start all docker containers required for a sample module, execute `docker-compose up -d` in the directory of the module.
 This will run all containers as defined in the `docker-compose.yml` file located at the root of the module. To tear down all containers, execute `docker-compose down`.
 
 Execute `docker ps` to view all running docker images.
+
 
 <a id="headline-3"></a>
 ## Project Setup
@@ -94,3 +94,8 @@ Within Eclipse you need to import the source code.
 2. Select `Maven - Existing Maven Projects` in the dialog
 3. Import the module you want to work on, e.g. `spring-security-acl` by selecting the respective directory and clicking `OK`
 4. Finally, update the Maven Settings of the project by presssing `ALT+F5` and then `OK`.
+
+<a id="headline-4"></a>
+## REST API Testing Tools
+- [Postman](https://chrome.google.com/webstore/detail/postman/fhbjgbiflinjbdggehcddcbncdddomop) is a Chrome Plugin that helps to create and test custom HTTP requests.
+- You might need to install another [`Postman Interceptor` Chrome Plugin](https://chrome.google.com/webstore/detail/postman-interceptor/aicmkgpgakddgnaphhhpliifpcfhicfo), which will help you to send requests which uses browser cookies through the `Postman` app.

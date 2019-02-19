@@ -198,17 +198,21 @@ After this the related entries for the principal user (sid) should disappear fro
 
 <a id='requirements'></a>
 # Requirements
-In order to deploy it to Cloud Foundry you need to meet the following requirements:
-- Cloud Foundry client 6.42 or later. You will find installation instructions here: https://docs.cloudfoundry.org/cf-cli/
+In case you like to run the application locally or deploy it to SAP CP Cloud Foundry, there are some requirements. **Find a detailed installation description for the above tools in the next section.**
+
+For the deployment to Cloud Foundry you need to meet the following requirements:
+- Cloud Foundry client 6.42 or later
 - Recommended REST API testing tools: 
    - Chrome web browser
    - Postman Chrome Plugin 
    - Postman Interceptor Chrome Plugin
 
 To run and debug the application locally the following tools needs to be installed as well:
-- Java 8 JDK  https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
-- Docker  https://www.docker.com/get-started 
-- An IDE for example Eclipse STS https://spring.io/tools3/sts/all 
+- Java 8 JDK
+- Maven
+- Docker
+- An IDE for example Eclipse STS
+
 
 # <a name="setupandstart"></a>Download and Installation
 ## Prerequisites
@@ -222,7 +226,7 @@ For this, the local system environment variable `VCAP_SERVICES` must contain the
 Make sure that PostgreSQL is running on the local machine, as referenced in `VCAP_SERVICES`. 
 
 The `docker-compose.yml` specifies all required docker containers.
-In order to start a fresh database container with postgresql, execute 
+In order to start a fresh database container with PostgreSQL, execute
 ```bash
 docker-compose up -d
 ```
@@ -239,13 +243,13 @@ In both cases, your application will be deployed to an embedded Tomcat web serve
 Execute in terminal (within project root e.g. ~/git/cc-bulletinboard-ads-spring-boot, which contains the`pom.xml`):
 ```bash 
 source localEnvironmentSetup.sh
-./mvnw spring-boot:run
+./mvn spring-boot:run
 ```
 
 Or on Windows command line:
 ```bash
 localEnvironmentSetup.bat
-mvnw spring-boot:run
+mvn spring-boot:run
 ```
 
 ### Run in Eclipse (STS)
@@ -267,9 +271,9 @@ Build the Advertisement Service which is a Java web application running in a Jav
 
 Execute in the command line (within project directory, which contains the`pom.xml`):
 ```
-./mvnw package
+./mvn package
 ```
-... or `mvnw package` in Windows command line.
+... or `mvn package` in Windows command line.
 
 ### Login to Cloud Foundry
 Make sure your are logged in to Cloud Foundry and you target your trial space.
