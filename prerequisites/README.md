@@ -14,7 +14,7 @@
 
 <a id="headline-2"></a>
 ## Local Setup
-In case you like to run the example locally, you need to prepare your local system environment. Like the sample code this comes with no warranty and we can not provide support here. For further details see also [LICENCE](LICENCE.pdf) file.
+In case you like to run the example locally, you need to prepare your local system environment. Like the sample code this comes with no warranty and we can not provide support here. For further details see also [LICENSE](/LICENSE.pdf) file.
 
 <a id="headline-2.2"></a>
 ### Java 8 JDK
