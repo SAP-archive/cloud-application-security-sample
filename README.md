@@ -15,4 +15,4 @@ For any question please [open an issue](https://github.com/SAP/cloud-application
 
 ## License
 Copyright (c) 2019 SAP SE or an SAP affiliate company. All rights reserved.
-This file is licensed under the licensed under the Apache Software License, v. 2 except as noted otherwise in the [LICENCE](LICENCE.pdf) file.
+This file is licensed under the licensed under the Apache Software License, v. 2 except as noted otherwise in the [LICENSE](/LICENSE.pdf) file.
