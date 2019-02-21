@@ -1,7 +1,8 @@
 # Cloud Application Security Samples
 
 ## Description
-Implementing security in SAP Cloud Platform Applications?  These samples demonstrate several different technologies to implement security authentication and authorization.
+Implementing security in SAP Cloud Platform Applications?  
+The SAP Cloud Platform offers specific support to implement authentication and authoriztaion for business users that access SAP Cloud Platform applications. As a developer of such an applications you have different options how to leverage the possibilities that SAP Cloud Platform offers. In this repository we want to showcase how this can be done. These samples demonstrate several different technologies to implement security authentication and authorization.
 
 ### Overview of samples
 Each sample is provided in a separate module.
