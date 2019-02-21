@@ -1,4 +1,4 @@
-# cloud-application-security
+# Cloud Application Security Samples
 
 ## Description
 Implementing security in SAP Cloud Platform Applications?  These samples demonstrate several different technologies to implement security authentication and authorization.
@@ -15,4 +15,4 @@ For any question please [open an issue](https://github.com/SAP/cloud-application
 
 ## License
 Copyright (c) 2019 SAP SE or an SAP affiliate company. All rights reserved.
-This file is licensed under the licensed under the Apache Software License, v. 2 except as noted otherwise in the [LICENSE](/LICENSE.pdf) file.
+This file is licensed under the licensed under the Apache Software License, v. 2 except as noted otherwise in the [LICENSE](/LICENSE.pdf) file and in the [CREDITS](/CREDITS) file.
