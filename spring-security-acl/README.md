@@ -1,6 +1,6 @@
 # Access Limitation on Instances using Spring ACL
 
-This [Spring Boot](http://projects.spring.io/spring-boot/) 2.0 demo application shows how to implement instance-based access control in Spring based SAP Cloud Platform applications. It leverages [Spring Security ACL](https://github.com/spring-projects/spring-security) and integrates to SAP Cloud Platform XSUAA service using the [SAP Container Security Library (Java)](https://github.com/SAP/cloud-security-xsuaa-integration/tree/develop), which is available on [maven central](https://search.maven.org/search?q=com.sap.cloud.security).
+This [Spring Boot](http://projects.spring.io/spring-boot/) 2.0 demo application shows how to implement instance-based access control in Spring based SAP Cloud Platform applications. It leverages [Spring Security ACL](https://github.com/spring-projects/spring-security) and integrates to SAP Cloud Platform XSUAA service using the [SAP Container Security Library (Java)](https://github.com/SAP/cloud-security-xsuaa-integration), which is available on [maven central](https://search.maven.org/search?q=com.sap.cloud.security).
 
 Instances, you want to protect, could be **business objects** (e.g. procurement order), **data records** on the database (e.g. leave request) or any other **resource**.
 
