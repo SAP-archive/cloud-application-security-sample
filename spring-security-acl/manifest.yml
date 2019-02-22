@@ -10,7 +10,7 @@ applications:
   routes:
   - route: bulletinboard-ads-((ID)).((LANDSCAPE_APPS_DOMAIN))
   path: target/demo-application-security-acl.jar
-  buildpack: https://github.com/cloudfoundry/java-buildpack.git#v4.15
+  buildpack: https://github.com/cloudfoundry/java-buildpack.git
   health-check-type: http
   health-check-http-endpoint: /actuator/health
   env:
@@ -27,7 +27,7 @@ applications:
   routes:
   - route: approuter-((ID)).((LANDSCAPE_APPS_DOMAIN))
   path: src/main/approuter
-  buildpack: https://github.com/cloudfoundry/nodejs-buildpack.git#v1.6.38
+  buildpack: https://github.com/cloudfoundry/nodejs-buildpack.git
   memory: 128M
   timeout: 360
   env:
