@@ -19,10 +19,10 @@ This document is divided into the following sections
 - [Further Learning Material](#furtherReading) - references and further learning material
 
 <a id='description'></a>
-# Description
+## Description
 
 <a id='motivation'></a>
-## Motivation
+### Motivation
 Assume you have a cloud-native Spring(Boot) application that exposes REST APIs to access (read, write,...) instances that are worth protecting. An instance could be a business object having the type of a procurement order, a leave request or in our case an advertisement. With Spring Security ACL you can control the access to dedicated instances. 
 
 An **Access Control List (ACL)** is a list of permissions attached to a dedicated instance. An ACL specifies for an instance which operations (e.g. read, write, publish, ...) are granted to an identity. An identity can be a user principal or match to a user role/attribute.
