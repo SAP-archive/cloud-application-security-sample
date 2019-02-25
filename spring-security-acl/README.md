@@ -197,7 +197,7 @@ User with "admin" permission for an advertisement can remove permissions to it f
 After this the related entries for the principal user (sid) should disappear from the `ACL_ENTRY` table.
 
 <a id='requirements'></a>
-# Requirements
+## Requirements
 In case you like to run the application locally or deploy it to SAP CP Cloud Foundry, there are some requirements. **Find a detailed installation description for the above tools in the next section.**
 
 For the deployment to Cloud Foundry you need to meet the following requirements:
@@ -341,7 +341,7 @@ Test the deployed REST Service on Cloud Foundry via the approuter url using the 
 Find a step-by-step description on how to test using `Postman` [here](https://github.com/SAP/cloud-bulletinboard-ads/blob/Documentation/Security/Exercise_24_MakeYourApplicationSecure.md).
 
 <a id='notes'></a>
-# Implementation Details
+## Implementation Details
 
 1. Setup Spring ACL database table (using liquibase): [database changelog](src/main/resources/db/changelog), [database population](src/main/resources/db/population)
 1. Configure Spring ACL: [AclConfig](src/main/java/com/sap/cp/appsec/config/AclConfig.java) and [AclAuditLogger](src/main/java/com/sap/cp/appsec/config/AclAuditLogger.java)
