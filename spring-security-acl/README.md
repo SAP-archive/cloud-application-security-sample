@@ -213,12 +213,13 @@ To run and debug the application locally the following tools needs to be install
 - Docker
 - An IDE for example Eclipse STS
 
+All download links can be found in the [prerequisites section](/prerequisites/README.md).
 
-# <a name="setupandstart"></a>Download and Installation
-## Prerequisites
+## <a name="setupandstart"></a>Download and Installation
+### Prerequisites
 Setup your development environment according to the description [here](/prerequisites/README.md).
 
-## Prepare local environment
+### Prepare local environment
 The application is setup to connect to a PostgreSQL database, which is provided as part of a docker container.
 For this, the local system environment variable `VCAP_SERVICES` must contain the corresponding database connection information.
 
@@ -433,7 +434,7 @@ For the PUT-request `/api/v1/ads/acl/grantPermissionsToUser/{advertisementId}` t
  - Security with Spring Security and Xsuaa
  - Spring Security ACL, setup database schema using Liquibase
 
-# <a name="furtherReading"></a>Further References
+## <a name="furtherReading"></a>Further References
 - [Github: spring-projects/spring-security](https://github.com/spring-projects/spring-security)
 - [Github: SAP Container Security Library (Java)](https://github.com/SAP/cloud-security-xsuaa-integration)
 - [Spring.io: Domain Object Security (ACLs)](https://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#domain-acls)
