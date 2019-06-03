@@ -9,7 +9,8 @@ Each sample is provided in a separate module.
 
    Module | Description | Availability
    ---- | -------- | ----
-   [spring-security-acl](spring-security-acl) | This module shows the usage of Spring Security ACL to implement instance-based access control in your Spring-based SAP Cloud Platform application. | 2019-01
+      [spring-security-basis](spring-security-basis) | This module shows how to implement basic access control in Spring-based SAP Cloud Platform applications. It leverages Spring Security 5.x and integrates to SAP Cloud Platform XSUAA service (OAuth Resource Server) using the SAP Container Security Library (Java), which is available on maven central. | 2019-06
+   [spring-security-acl](spring-security-acl) | This module shows the usage of Spring Security ACL to implement instance-based access control in Spring-based SAP Cloud Platform applications. | 2019-01
 
 ## How to obtain support
 For any question please [open an issue](https://github.com/SAP/cloud-application-security-sample/issues/new) in GitHub and make use of the [labels](https://github.com/SAP/cloud-application-security-sample/labels) in order to refer to the sample and to categorize the kind of the issue.

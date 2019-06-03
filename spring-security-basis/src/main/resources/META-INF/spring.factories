@@ -1,0 +1,2 @@
+org.springframework.boot.env.EnvironmentPostProcessor=com.sap.cp.appsec.mock.XsuaaMockPostProcessor
+

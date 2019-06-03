@@ -1,0 +1,39 @@
+---
+# Configuration:
+# configured for EU10. For other landscapes, please adopt LANDSCAPE_APPS_DOMAIN in ../vars.yml
+# If the route is occupied, you might need to change ID in ../vars.yml as well
+applications:
+- name: bulletinboard-ads
+  instances: 1
+  memory: 1G
+  timeout: 360
+  routes:
+  - route: bulletinboard-ads-((ID)).((LANDSCAPE_APPS_DOMAIN))
+  path: target/demo-application-security-basis-1.0.jar
+  health-check-type: http
+  health-check-http-endpoint: /actuator/health
+  env:
+    # Disable Spring Auto Reconfiguration
+    JBP_CONFIG_SPRING_AUTO_RECONFIGURATION: '{enabled: false}'
+    # Use the non-blocking /dev/urandom instead of the default to generate random numbers.
+    # When using Java community buildpack, increase startup times, especially when using Spring Boot.
+    JAVA_OPTS: -Djava.security.egd=file:///dev/./urandom
+  services:
+  - uaa-bulletinboard
+# Application Router as web server
+- name: approuter
+  routes:
+  - route: approuter-((ID)).((LANDSCAPE_APPS_DOMAIN))
+  path: src/main/approuter
+  memory: 128M
+  timeout: 360
+  env:
+    TENANT_HOST_PATTERN: "^(.*)-approuter-((ID)).((LANDSCAPE_APPS_DOMAIN))"
+    destinations: >
+      [{
+         "name":"ads-destination",
+         "url" :"https://bulletinboard-ads-((ID)).((LANDSCAPE_APPS_DOMAIN))",
+         "forwardAuthToken": true}
+      ]
+  services:
+  - uaa-bulletinboard
