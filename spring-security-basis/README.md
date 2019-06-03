@@ -4,7 +4,7 @@ The following steps will explain how to secure applications in SAP Cloud Platfor
 
 ## Goal of this sample project
 
-This [Spring Boot 2.0](http://projects.spring.io/spring-boot/) demo application shows how to implement basic access control in Spring based SAP Cloud Platform applications. It leverages [Spring Security 5.x](https://github.com/spring-projects/spring-security) and integrates to SAP Cloud Platform XSUAA service (OAuth Resource Server) using the [SAP Container Security Library (Java)](https://github.com/SAP/cloud-security-xsuaa-integration/tree/develop), which is available on [maven central](https://search.maven.org/search?q=com.sap.cloud.security).
+This [Spring Boot 2.0](http://projects.spring.io/spring-boot/) demo application shows how to implement basic access control in Spring based SAP Cloud Platform applications. It leverages [Spring Security 5.x](https://github.com/spring-projects/spring-security) and integrates to SAP Cloud Platform XSUAA service (OAuth Resource Server) using the [SAP Container Security Library (Java)](https://github.com/SAP/cloud-security-xsuaa-integration), which is available on [maven central](https://search.maven.org/search?q=com.sap.cloud.security).
 
 In order to limit access to certain instances, you can restrict the access to specific function by Roles (Scopes). Or, even more fine granular, you can restrict the access on data level so that different users can see and maintain different subsets of the data instances depending on certain user dependent attribute values.
 
@@ -72,9 +72,10 @@ You need to configure the Application Router for your business application as ex
 - [Exercise 22: Deploy Application Router and Set Up Authentication](https://github.com/SAP/cloud-bulletinboard-ads/blob/Documentation/Security/Exercise_22_DeployApplicationRouter.md)
 - [[Optional] Exercise 23: Setup Generic Authorization](https://github.com/SAP/cloud-bulletinboard-ads/blob/Documentation/Security/Exercise_23_SetupGenericAuthorization.md)
 
-Note that the Application Router can be bypassed and the microservice can directly be accessed. So the backend microservices must protect all their endpoints by validating the JWT token and implementing proper scope checks.
+Note that the Application Router can be bypassed and the microservice can directly be accessed. So the backend microservices must protect all their endpoints by validating the JWT access token and implementing proper scope checks.
 
-The JWT contains a signature that needs to be verified by every microservice to establish trust. Hence, every microservice requires a key (public key or client-secrets) to verify the JWTs signature and reject any request with non-valid JWTs. Therefore, every service has to maintain a service binding to the XSUAA that provides the url to get the current token key (e.g. `https://<your tenant/subdomain>.authentication.<region>.hana.ondemand.com/token_keys`). To enable this, every microservice binds to a dedicated XSUAA instance which writes this XSUAA url into the VCAP_SERVICES environment variable, the microservices can connect to in order to verify any token’s validity.
+In order to validate an access token, the JWT must be decoded and its signature must be verified with one of the JSON Web Keys (JWK) such as public RSA keys. Furthermore the claims found inside the access token must be validated. For example, the client id (`cid`), the issuer (`iss`), the audience (`aud`), and the expiry time (`exp`).  
+Hence, every microservice has to maintain a service binding to the XSUAA that provides the XSUAA url as part of `VCAP_SERVICES` to get the current JWKs and has to configure the XSUAA as OAuth 2.0 Resource Server with its XSUAA access token validators by making use of [SAP Container Security Library (Java)](https://github.com/SAP/cloud-security-xsuaa-integration).
 
 This example project contains a full example that explains how to basically secure the resources that are exposed by your Spring-based cloud foundry application and how to run it locally without dependent services.
 
@@ -104,7 +105,7 @@ Options to implement basic role-based authorization checks:
 In addition to the functional separation you want to restrict the modification and deletion of a resource to the resource owner, the one who has created the advertisement.
 
 #### Recommendation
-When method security is enabled ([Method Security Configuration](src/main/java/com/sap/cp/appsec/config/MethodSecurityConfig.java)) this can be easily implemented by referring to a bean as part of the Web Security Expression that implements the `isCreatedBy` check `@PreAuthorize("@webSecurity.isCreatedBy(#id)")` ([Web Security Expressions](src/main/java/com/sap/cp/appsec/security/WebSecurityExpressions.java)).
+When Method Security is enabled ([Method Security Configuration](src/main/java/com/sap/cp/appsec/config/MethodSecurityConfig.java)) this can be easily implemented by referring to a bean as part of the Web Security Expression that implements the `isCreatedBy` check `@PreAuthorize("@webSecurity.isCreatedBy(#id)")` ([Web Security Expressions](src/main/java/com/sap/cp/appsec/security/WebSecurityExpressions.java)).
 
 There is also the option to use `hasPermission()` expressions. Then you have to explicitly configure a PermissionEvaluator in your application context. This and much more about built-in method security expressions are documented on [Spring.io documentation](https://docs.spring.io/spring-security/site/docs/current/reference/html5/#el-access).
 
