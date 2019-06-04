@@ -19,7 +19,7 @@ This document is divided into the following sections
  - [Use Cases](#usecases) - Role-Based Access Control (RBAC) and Attribute-Based Access Control (ABAC)
  - [Download and Installation](#setupandstart) - a description of how to use this project
  - [Steps to Deploy and Test on Cloud Foundry](#deployAndTestOnCF) - explains how to deploy and test the application on Cloud Foundry
- - [Further Learning Material](#furtherReading) - references and further learning material
+ - [Further Refererences](#furtherReading) - references and further learning material
 
 <a id='components'></a>
 ## Understanding OAuth 2.0 Components
@@ -129,10 +129,10 @@ Attributes and Role-templates are specified by the application developer as part
 
 ## <a name="setupandstart"></a>Download and Installation
 ### Prerequisites
-- Setup your development environment according to the description [here](/prerequisites/README.md). There is no need to install **Docker**.
+Setup your development environment according to the description [here](/prerequisites/README.md). There is no need to install **Docker**.
 
 ### Run the application in your local environment
-To run the service locally you have two options: start it directly via Maven on the command line or within your IDE (Eclipse, IntelliJ).
+To run the application locally you have two options: start it directly via Maven on the command line or within your IDE (Eclipse, IntelliJ).
 
 In both cases, your application will be deployed to an embedded Tomcat web server and is visible at the address `http://localhost:8080/api/v1/ads`.
 
@@ -140,10 +140,10 @@ In both cases, your application will be deployed to an embedded Tomcat web serve
 
 > You can find [here](https://github.com/SAP/cloud-security-xsuaa-integration/tree/master/spring-xsuaa-mock#xsuaa-security-xsuaa-mock-library) a more detailed description on how to setup the XSUAA Mock Web Server in your Spring boot application.
 
-The provided [`localEnvironmentSetup`](localEnvironmentSetup.bat) shell script can be used to set the necessary values for local execution. Within your development IDE (Eclipse, IntelliJ), you need to define the `VCAP_APPLICATION` and the `SPRING_PROFILES_ACTIVE` as done in the script.
+The provided [`localEnvironmentSetup`](localEnvironmentSetup.bat) shell script can be used to set the necessary values for local execution. Within your development IDE (Eclipse, IntelliJ), you need to define the `VCAP_APPLICATION` and the `SPRING_PROFILES_ACTIVE` environment variables - as done in the script.
 
 ### Run on the command line
-Execute in terminal (within project root e.g. ~/git/cc-bulletinboard-ads-spring-boot, which contains the `pom.xml`):
+Execute in terminal (within project root, which contains the `pom.xml`):
 ```bash
 source localEnvironmentSetup.sh
 mvn spring-boot:run
@@ -161,27 +161,29 @@ You can also right-click on the class in the Package Explorer, and select `Run A
 > Make sure that you have set the same environment variables in the Run Configuration as specified in the [`localEnvironmentSetup`](localEnvironmentSetup.bat) script.
 
 ### Excursion: JWT Token
-The application endpoints are secured, that means you should get for any endpoint (except for `\actuator\health`) an 401 ("unauthorized") status code. The application expects a digitally signed `JWT token` as part of the Authorization header to simulate that you are an authenticated user with the scopes/roles required to access the protected endpoints.
+The application endpoints are secured, that means you should get for any endpoint (except for `\actuator\health`) an 401 ("unauthorized") status code. The application expects a digitally signed JWT as part of the Authorization header to simulate that you are an authenticated user with the scopes/roles required to access the protected endpoints.
 
-Have a look into the [`AdvertisementControllerTest`](src/test/java/com/sap/cp/appsec/controllers/AdvertisementControllerTest.java) test class. There we make use of the `JwtGenerator` from the [`spring-xsuaa-test` library](https://github.com/SAP/cloud-security-xsuaa-integration/blob/master/spring-xsuaa-test/README.md) for generating some JWT tokens with different scopes in order to test whether the application behaves correctly and the endpoints are properly protected:
+Have a look into the [`AdvertisementControllerTest`](src/test/java/com/sap/cp/appsec/controllers/AdvertisementControllerTest.java) test class. There we make use of the `JwtGenerator` from the [`spring-xsuaa-test` library](https://github.com/SAP/cloud-security-xsuaa-integration/blob/master/spring-xsuaa-test/README.md) for generating some JWT tokens with different scopes and attribute values in order to test whether the application behaves correctly and the endpoints are properly protected:
 
-- missing jwt token should result in not authenticated (401)
-- expired or invalid signed jwt token should result in not authenticated (401)
-- jwt token with missing scopes should result in forbidden / not authorized (403) 
+- missing JWT should result in `not authenticated (401)`
+- expired or invalid signed JWT should result in `not authenticated (401)`
+- JWT with missing scopes should result in `forbidden / not authorized (403)` 
 
 > Explanation: The generated JWT Token is an "individual one" as it
->  - contains specific scope(s) e.g. `<<your appId>>.Display` (`<<your appId>>` as defined in your `xsuaa.xsappname` property or as part of  `VCAP_SERVICES`--`xsuaa`--`xsappname` system environment variable).
->  - it is signed with a private key that fits to the public key of the XSUAA (or Mock Web Server).
+>  - contains specific scope(s) e.g. `<<your appId>>.Display` (`<<your appId>>` matches the `xsuaa.xsappname` property or as part of  `VCAP_SERVICES`--`xsuaa`--`xsappname` system environment variable).
+>  - it is signed with a private key that fits to the public key (JWK) of the XSUAA (or Mock Web Server).
 
-For a better understanding you can set a breakpoint in the `setup` method of the `AdvertismentControllerTest` test, start the test in debugging mode, fetch a jwt token and decode it on this web site: https://jwt.io/.
+For a better understanding you can set a breakpoint in the `setup` method of the `AdvertismentControllerTest` test, start the test in debugging mode, fetch a JWT and decode it on this web site: https://jwt.io/.
 
 
 ### Test using Postman
-Now you are ready to test the application manually in the browser using the [`Postman` chrome plugin](https://chrome.google.com/webstore/detail/postman/fhbjgbiflinjbdggehcddcbncdddomop).
+Now you are ready to test the application manually using the [`Postman` chrome plugin](https://chrome.google.com/webstore/detail/postman/fhbjgbiflinjbdggehcddcbncdddomop).
 
 Test the REST endpoint `http://localhost:8080/api/v1/ads` manually using the `Postman` chrome extension.
 
 You can import the [Postman collection](documentation/testing/spring-security-local.postman_collection.json), as well as the [Postman environment](documentation/testing/spring-security-local.postman_environment.json) that provides different JWT tokens for the `Authorization` headers to do some sample requests.
+
+**Note**: For all requests make sure, that you provide a header namely `Authorization` with a JWT token as value e.g. `Bearer eyJhbGciOiJSUzI1NiIs...`.
 
 For reference look up [Postman documentation](https://www.getpostman.com/docs/environments).
 
@@ -189,7 +191,7 @@ For reference look up [Postman documentation](https://www.getpostman.com/docs/en
 ## Steps to Deploy and Test on Cloud Foundry
 
 ### Build Advertisement Service (our Java application)
-Build the Advertisement Service which is a Java web application running in a Java VM. Maven build tool compiles the code and packages it in its distributable format, such as a `JAR` (Java Archive). With this the maven dependencies are downloaded from the [Maven central](https://search.maven.org/) into the `~/.m2/repository` directory. Furthermore the JUnit tests (unit tests and component tests) are executed and the `target/demo-application-security-acl.jar` is created.
+Build the Advertisement Service which is a Java web application running in a Java VM. Maven build tool compiles the code and packages it in its distributable format, such as a `JAR` (Java Archive). With this the maven dependencies are downloaded from the [Maven central](https://search.maven.org/) into the `~/.m2/repository` directory. Furthermore the JUnit tests are executed and the `target/demo-application-security-basis-1.0.jar` is created.
 
 Execute in the command line (within project directory, which contains the
 `pom.xml`):
@@ -285,7 +287,7 @@ Call again your application endpoints via the approuter Uri using the `Postman` 
 
 ***
 
-# <a name="furtherReading"></a>Further Learning Material
+# <a name="furtherReading"></a>Further References
 - [openSAP course: Cloud-Native Development with SAP Cloud Platform](https://open.sap.com/courses/cp5)
 - [Baeldung tutorial: A Custom Security Expression with Spring Security](https://www.baeldung.com/spring-security-create-new-custom-security-expression)
 - [Spring Security Mock Authorization Server for providing token keys](https://github.com/spring-projects/spring-security/tree/master/samples/boot/oauth2resourceserver)
