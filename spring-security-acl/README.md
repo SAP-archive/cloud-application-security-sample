@@ -8,15 +8,14 @@ The microservice is adapted from the code developed in the [openSAP course: Clou
 
 ## Table of Contents
 This document is divided into the following sections
-
 - [Description](#description) - understand when and how Spring Security ACL helps
   - [Motivation](#motivation)
   - [Comparison of the Filter Approach with the ACL Approach](#comparison)
   - [Examples / Use Cases](#examples)
-- [Requirements](#requirements) - list of requirements
-- [Download and Installation](#setupandstart) - a detailed description of how to use this project
+- [Download and Installation](#setupandstart) - a description of how to use this project
+- [Steps to Deploy and Test on Cloud Foundry](#deployAndTestOnCF) - explains how to deploy and test the application on Cloud Foundry
 - [Implementation Details](#notes) - dig into details of its implementation, configuration, notable features
-- [Further Learning Material](#furtherReading) - references and further learning material
+- [Further References](#furtherReading) - references and further learning material
 
 <a id='description'></a>
 ## Description
@@ -62,7 +61,7 @@ The user with log-on name `advertiser` creates a new advertisement (id = `55`). 
   -- | ---- | --------  
    7 | true | advertiser 
    
-  > Note: the `sid` value is in fact not `advertiser` but contains also the origin (IdP) of the Jwt token `user/{origin}/advertiser`.
+  > Note: the `sid` value is in fact not `advertiser` but contains also the origin (IdP) of the JWT token `user/{origin}/advertiser`.
 
 - For the new advertisement instance with id `55` an entry gets created in the `ACL_OBJECT_IDENTITY` table:
 
@@ -208,35 +207,12 @@ But this will not remove all / some permissions from a dedicated user principal.
 See also the Spring forum [here](http://forum.spring.io/forum/spring-projects/security/72871-delete-all-ace-s-in-multiple-acls-for-a-given-sid).
 
 
-<a id='requirements'></a>
-## Requirements
-In case you like to run the application locally or deploy it to SAP CP Cloud Foundry, there are some requirements. **Find a detailed installation description for the above tools in the next section.**
-
-For the deployment to Cloud Foundry you need to meet the following requirements:
-- Cloud Foundry client 6.42 or later
-- Recommended REST API testing tools: 
-   - Chrome web browser
-   - Postman Chrome Plugin 
-   - Postman Interceptor Chrome Plugin
-
-To run and debug the application locally the following tools needs to be installed as well:
-- Java 8 JDK
-- Maven
-- Docker
-- An IDE for example Eclipse STS
-
-All download links can be found in the [prerequisites section](/prerequisites/README.md).
-
 ## <a name="setupandstart"></a>Download and Installation
 ### Prerequisites
 Setup your development environment according to the description [here](/prerequisites/README.md).
 
-### Prepare local environment
-The application is setup to connect to a PostgreSQL database, which is provided as part of a docker container.
-For this, the local system environment variable `VCAP_SERVICES` must contain the corresponding database connection information.
-
-### Start PostgreSQL database
-Make sure that PostgreSQL is running on the local machine, as referenced in `VCAP_SERVICES`. 
+### Start PostgreSQL database in docker container
+We need to make sure that a PostgreSQL database is running on the local machine, as referenced in `VCAP_SERVICES`. 
 
 The `docker-compose.yml` specifies all required docker containers.
 In order to start a fresh database container with PostgreSQL, execute
@@ -248,15 +224,17 @@ To tear down all containers, execute:
 docker-compose down
 ```
 
-To run the service you have two options: start it directly via Maven on the command line or within Eclipse.
+To run the application locally you have two options: start it directly via Maven on the command line or within your IDE (Eclipse, IntelliJ).
 
 In both cases, your application will be deployed to an embedded Tomcat web server and is visible at the address `http://localhost:8080/api/v1/ads/acl`.
 
+The provided [`localEnvironmentSetup`](localEnvironmentSetup.bat) shell script can be used to set the necessary values for local execution. Within your development IDE (Eclipse, IntelliJ), you need to define the following environment variables: `VCAP_APPLICATION`, `VCAP_SERVICES` and `SPRING_PROFILES_ACTIVE` - as done in the script.
+
 ### Run on the command line
-Execute in terminal (within project root e.g. ~/git/cc-bulletinboard-ads-spring-boot, which contains the`pom.xml`):
+Execute in terminal (within project root, which contains the`pom.xml`):
 ```bash 
 source localEnvironmentSetup.sh
-./mvn spring-boot:run
+mvn spring-boot:run
 ```
 
 Or on Windows command line:
@@ -270,33 +248,34 @@ In Eclipse Spring Tool Suite (STS) you can import the project as an existing Mav
 You can also right-click on the class in the Package Explorer, and select `Run As` - `Spring Boot App`. Make sure that you have set in the same environment variables in the Run Configuration as specified in the [`localEnvironmentSetup script`](localEnvironmentSetup.bat).
 
 ## Test using Postman
-The service endpoints are secured, that means no unauthorized user can access the endpoint. The application expects a so called `JWT token` as part of the `Authorization` header of the service that also contains the scope, the user is assigned to.
+Now you are ready to test the application manually using the [`Postman` chrome plugin](https://chrome.google.com/webstore/detail/postman/fhbjgbiflinjbdggehcddcbncdddomop).
 
-Test the REST Service `http://localhost:8080/api/v1/ads` manually using the `Postman` chrome extension.
+The service endpoints are secured, that means no unauthorized user can access the endpoint. The application expects a so called `JWT` (JSON Web Token) as part of the `Authorization` header of the service that also contains the scope, the user is assigned to.
+
 You can import the [Postman collection](documentation/testing/spring-acl-local.postman_collection.json), as well as the [Postman environment](documentation/testing/spring-acl-local.postman_environment.json) that provides different JWT tokens for the `Authorization` headers to do some sample requests.
 
-**Note**: For all requests make sure, that you provide a header namely `Authorization` with a JWT token as value e.g. `Bearer eyJhbGciOiJSUzI1NiIs...`. You can generate a valid JWT token as described [in Exercise 24](https://github.com/SAP/cloud-bulletinboard-ads/blob/Documentation/Security/Exercise_24_MakeYourApplicationSecure.md#generate-jwt-token).
+**Note**: For all requests make sure, that you provide a header namely `Authorization` with a JWT token as value e.g. `Bearer eyJhbGciOiJSUzI1NiIs...`.
 
-## Steps to deploy to Cloud Foundry
+For reference look up [Postman documentation](https://www.getpostman.com/docs/environments).
+
+<a id='deployAndTestOnCF'></a>
+## Steps to Deploy and Test on Cloud Foundry
 
 ### Build Advertisement Service (our Java application)
-Build the Advertisement Service which is a Java web application running in a Java VM. Maven build tool compiles the code and packages it in its distributable format, such as a `JAR` (Java Archive). With this the maven dependencies are downloaded from the [Maven central](https://search.maven.org/) into the `~/.m2/repository` directory. Furthermore the JUnit tests (unit tests and component tests) are executed and the `target/demo-application-security-acl.jar` is created.
+Build the Advertisement Service which is a Java web application running in a Java VM. Maven build tool compiles the code and packages it in its distributable format, such as a `JAR` (Java Archive). With this the maven dependencies are downloaded from the [Maven central](https://search.maven.org/) into the `~/.m2/repository` directory. Furthermore the JUnit tests are executed and the `target/demo-application-security-acl.jar` is created.
 
 Execute in the command line (within project directory, which contains the`pom.xml`):
 ```
-./mvn package
+mvn package
 ```
-... or `mvn package` in Windows command line.
 
 ### Login to Cloud Foundry
 Make sure your are logged in to Cloud Foundry and you target your trial space.
 The following commands will setup your environment to use the provided Cloud Foundry instance.
 
- - `cf api <<Your API endpoint>>`
+ - `cf api <<Your API endpoint>>` (API endpoints are listed [here](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/350356d1dc314d3199dca15bd2ab9b0e.html))
  - `cf login -u <<your user id>>`
  - In case you are assigned to multiple orgs, select the `trial` organisation.
-
-To find the API end point, please refer the [documentation](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/350356d1dc314d3199dca15bd2ab9b0e.html).
 
 
 ### Create services
