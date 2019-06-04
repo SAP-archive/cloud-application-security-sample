@@ -197,13 +197,13 @@ User with "admin" permission for an advertisement can remove permissions to it f
 After this the related entries for the principal user (sid) should disappear from the `ACL_ENTRY` table.
 
 ### Cleanup of the ACL tables
-The Spring ACL class JdbcMutableAclService support the following methods:
+The `JdbcMutableAclService` class supports the following method:
 ```
 deleteAcl(ObjectIdentity objectIdentity, boolean deleteChildren)
 ```
-This should be called whenever an object instance, for which acl entries are mapped, is deleted.
+This one should be called whenever an object instance, for which acl entries are mapped, is deleted.
 
-But this will not remove all / some permissions from a dedicated user principal. This needs to be implemented in the ACLService wrapper class, namely [AclSupport](https://github.wdf.sap.corp/CPSecurity/cp-application-security/blob/master/spring-security-acl/src/main/java/com/sap/cp/appsec/security/AclSupport.java).
+But this will not remove all / some permissions from a dedicated user principal. This needs to be implemented in the ACLService wrapper class, namely [AclSupport](src/main/java/com/sap/cp/appsec/security/AclSupport.java).
 
 See also the Spring forum [here](http://forum.spring.io/forum/spring-projects/security/72871-delete-all-ace-s-in-multiple-acls-for-a-given-sid).
 
