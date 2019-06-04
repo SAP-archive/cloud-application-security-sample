@@ -47,7 +47,7 @@ We recommend to use Eclipse as the following descriptions are tailored for it.
 > Note: the Community edition of [IntelliJ IDEA](https://www.jetbrains.com/idea/) is an alternative IDE.
 
 
-<a id="headline-2.7"></a>
+<a id="headline-2.6"></a>
 ### Cloud Foundry Client
 The developed microservices will run on the Cloud Foundry platform.
 
