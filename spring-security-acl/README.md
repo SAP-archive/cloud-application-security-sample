@@ -1,6 +1,10 @@
 # Access Limitation on Instances using Spring ACL
 
-This [Spring Boot](http://projects.spring.io/spring-boot/) 2.0 demo application shows how to implement instance-based access control in Spring based SAP Cloud Platform applications. It leverages [Spring Security ACL](https://github.com/spring-projects/spring-security) and integrates to SAP Cloud Platform XSUAA service using the [SAP Container Security Library (Java)](https://github.com/SAP/cloud-security-xsuaa-integration), which is available on [maven central](https://search.maven.org/search?q=com.sap.cloud.security).
+Assume you've understood how Spring-based applications can be basically secured as explained [here](/spring-security-basis), this sample project goes one step further, demonstrating instance-based access control using access control lists (ACL) in applications based on Spring Boot and deployed on SAP Cloud Platform, CloudFoundry.
+
+## Goal of this sample project
+
+This [Spring Boot 2.0](http://projects.spring.io/spring-boot/) demo application shows how to implement instance-based access control in Spring based SAP Cloud Platform applications. It leverages [Spring Security ACL](https://github.com/spring-projects/spring-security) and integrates to SAP Cloud Platform XSUAA service using the [SAP Container Security Library (Java)](https://github.com/SAP/cloud-security-xsuaa-integration), which is available on [maven central](https://search.maven.org/search?q=com.sap.cloud.security).
 
 Instances, you want to protect, could be **business objects** (e.g. procurement order), **data records** on the database (e.g. leave request) or any other **resource**.
 
@@ -8,49 +12,43 @@ The microservice is adapted from the code developed in the [openSAP course: Clou
 
 ## Table of Contents
 This document is divided into the following sections
-- [Description](#description) - understand when and how Spring Security ACL helps
-  - [Motivation](#motivation)
-  - [Comparison of the Filter Approach with the ACL Approach](#comparison)
-  - [Examples / Use Cases](#examples)
+- [Understanding Access Control Lists (ACL)](#motivation) - understand when and how ACL helps (in comparison to Attribute-Based Access Control (ABAC)) 
+- [Use Cases](#examples)
 - [Download and Installation](#setupandstart) - a description of how to use this project
 - [Steps to Deploy and Test on Cloud Foundry](#deployAndTestOnCF) - explains how to deploy and test the application on Cloud Foundry
 - [Implementation Details](#notes) - dig into details of its implementation, configuration, notable features
 - [Further References](#furtherReading) - references and further learning material
 
-<a id='description'></a>
-## Description
-
 <a id='motivation'></a>
-### Motivation
-Assume you have a cloud-native Spring(Boot) application that exposes REST APIs to access (read, write,...) instances that are worth protecting. An instance could be a business object having the type of a procurement order, a leave request or in our case an advertisement. With Spring Security ACL you can control the access to dedicated instances. 
+## Understanding Access Control Lists (ACL)
+Assume you have a cloud-native application that exposes REST APIs to access (read, write,...) instances that are worth protecting. An instance could be a business object having the type of a procurement order, a leave request or in our case an advertisement. With Access Control Lists (ACL) you can control the access to dedicated instances. 
 
-An **Access Control List (ACL)** is a list of permissions attached to a dedicated instance. An ACL specifies for an instance which operations (e.g. read, write, publish, ...) are granted to an identity. An identity can be a user principal or match to a user role/attribute.
+An **Access Control List (ACL)** is a list of permissions attached to dedicated instances. An ACL specifies for an instance which operations (e.g. read, write, publish, ...) are granted to an identity. An identity can be a user principal or match to a user role/attribute.
 
-Spring ACL approach can be useful when:
-- The instance-based access cannot solely be protected by roles (scopes and attributes), and in addition there is no "static" criteria (like cost center, confidentiality level, ...) that could be used as a filter. Then the decision whether a user is authorized for a certain instance can be defined per instance completely free of limitations just by maintaining the ACL.
-- If the instance-based access shall change dynamically during the instance lifecycle without the change of an attribute value this can be done by changing the ACL without changing the object itself.
-- The instance owner wants to delegate permissions to a dedicated user/substitute without consulting the administrator. For example, during vacation a manager likes to delegate the approvals of leave requests to the dedicated team leads.
--	The user's authorization is related to an object, that does not directly belong to the core domain of your application, like cost-center and is therefore not part of your application persistence. Still ACL entries can reflect this kind of relationships between application instances and foreign domain object as part of the ACL.
+The ACL approach can be useful when:
+- The access to instances cannot be solely protected by roles (scopes and attributes), and in addition there is no "static" criteria (like cost center, confidentiality level, ...) that could be used as a filter. Then the decision whether a user is authorized for a certain instance can be defined independently per instance just by maintaining the ACL.
+- The instance-based access shall change dynamically during the instance lifecycle without changing the instance and without consulting the administrator. For example, the instance owner wants to delegate permissions temporarily to dedicated users/substitutes or user groups. 
 - You want to model ACL hierarchies.
-  - For example, you are a facilitator and you have edit-permissions to some buildings within a location. Furthermore, you should have the same permissions to most of the rooms, that are linked to the buildings.
+  - For example, a facilitator should get edit-permissions to some buildings within a location. Furthermore, he should have the same permissions to most of the rooms, that are linked to the buildings.
   - Same could be the case for organizational hierarchies, like cost center.
 - You like to manage the ACL as part of your application and close to the instances, you want to protect without delegating the task of authorization management to a dedicated user administrator. 
 
-Additionally, Spring ACL simplifies the implementation of audit logs and GDPR compliance as all relevant data is stored in central authorization tables.
-
 <a id='comparison'></a>
-## Comparison of the Filter Approach with the ACL Approach
+### Comparison of the Attribute-based filter approach with the ACL Approach
 
-### Advantages of the Filter Approach
+#### Advantages of the Attribute-Based Access Control (ABAC)
 + Simplicity, and lower development effort as no additional infrastructure is needed.
 
-### Advantages of the ACL Approach
-+ The authorization decision is better understandable as missing authorizations can be clearly identified as such and not just as a reduced result list of an operation that can have different reasons.
-+ Auditability and effort for logging of the authorization relevant data is much easier as all information is kept in a central place (the ACL tables) and not distributed in application tables that have to care for change log themselves.
+Attribute-Based Access Control is explained and implemented with this [basis sample project](/spring-security-basis).
+
+#### Advantages of the ACL Approach
++ The authorization decision is better understandable as missing authorizations can be clearly identified as such and not just as a filtered result list of an operation, which can have different reasons.
++ Simplifies the implementation of audit logs and GDPR compliance as all relevant data is stored in central authorization tables.
++ Not limited to the attributes of an instance that needs somehow to match the attributes attached to a Role.
 + The ACL Approach can be combined with the Filter approach (with the cost of an additional table JOIN).
 
 <a id='examples'></a>
-## Examples / Use cases
+## Use Cases
 
 ### Create an protect-worthy instance and assign initial permissions to owner
 The user with log-on name `advertiser` creates a new advertisement (id = `55`). You can test with POST-request `/api/v1/ads/acl/` that the following entries are created in the postgreSql `test` database.
@@ -196,13 +194,13 @@ User with "admin" permission for an advertisement can remove permissions to it f
 After this the related entries for the principal user (sid) should disappear from the `ACL_ENTRY` table.
 
 ### Cleanup of the ACL tables
-The Spring ACL class JdbcMutableAclService support the following methods:
+The `JdbcMutableAclService` Spring ACL class supports the following methods:
 ```
 deleteAcl(ObjectIdentity objectIdentity, boolean deleteChildren)
 ```
 This should be called whenever an object instance, for which acl entries are mapped, is deleted.
 
-But this will not remove all / some permissions from a dedicated user principal. This needs to be implemented in the ACLService wrapper class, namely [AclSupport](https://github.wdf.sap.corp/CPSecurity/cp-application-security/blob/master/spring-security-acl/src/main/java/com/sap/cp/appsec/security/AclSupport.java).
+But this will not remove all / some permissions from a dedicated user principal. This needs to be implemented in the ACL Service wrapper class, namely [AclSupport](https://github.wdf.sap.corp/CPSecurity/cp-application-security/blob/master/spring-security-acl/src/main/java/com/sap/cp/appsec/security/AclSupport.java).
 
 See also the Spring forum [here](http://forum.spring.io/forum/spring-projects/security/72871-delete-all-ace-s-in-multiple-acls-for-a-given-sid).
 
@@ -298,16 +296,17 @@ cf push --vars-file ../vars.yml
 ```
 > The application will be pushed using the settings provided in the `manifest.yml` and `../vars.yml`. You can get the exact urls/routes of your deployed application with `cf apps`.
 
+<a id='approuterUri'></a>
 ### Create approuter route per tenant ID
 We make use of the `trial` subaccount. As you can see in the SAP CP Cockpit subaccounts have properties (see *Subaccount Details*) which of the most important one is the **Subdomain**. The Subdomain serves as the value for the technical property Tenant ID.
 
 The Tenant ID is encoded in the url, for example `https://<<your tenant>>-approuter-<<ID>>.<<LANDSCAPE_APPS_DOMAIN>>`.
 That's why we need to specify an approuter route per Tenant ID (subdomain name), e.g. `p012345trial`. For example:
 ```
-cf map-route approuter <<LANDSCAPE_APPS_DOMAIN>> -n <<your tenant>>-approuter-<<ID>>
+cf map-route approuter <<LANDSCAPE_APPS_DOMAIN e.g. cfapps.eu10.hana.ondemand.com>> -n <<your tenant e.g. p0123456trial>>-approuter-<<ID e.g. p0123456>>
 ```
 
-> Note: the `TENANT_HOST_PATTERN` environment variable (see `manifest.yml` file) specifies how the approuter should derive the tenant ID from the URL.
+And `cf app approuter` shows another tenant-specific approuter route, which is hereinafter **also called "`approuterUri`"**.
 
 ### Cockpit administration tasks
 Go to the [SAP Cloud Platform Cloud Cockpit](https://account.hanatrial.ondemand.com/#/home/welcome)
@@ -320,16 +319,19 @@ Go to the [SAP Cloud Platform Cloud Cockpit](https://account.hanatrial.ondemand.
 - Then navigate to your Subaccount and create a Role Collection e.g. `RC_GroupMember_MY_TEAM` and add the created Role.
 - Finally, as part of your Identity Provider, e.g. SAP ID Service, assign the created Role Collection to your user.
 
-Note: further up-to-date information you can get on sap.help.com: [Maintain Roles for Applications](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/7596a0bdab4649ac8a6f6721dc72db19.html).
+Further up-to-date information you can get on sap.help.com:
+- [Maintain Roles for Applications](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/7596a0bdab4649ac8a6f6721dc72db19.html).
+- [Maintain Role Collections](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/d5f1612d8230448bb6c02a7d9c8ac0d1.html)
+- [Assign Role Collections to Business Users](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/9e1bf57130ef466e8017eab298b40e5e.html)
 
 ### Test the deployed application
-Open a browser to test whether your microservice runs in the cloud. For this use the approuter URL, e.g. `https://<<your tenant>>-approuter-<<ID>>.<<LANDSCAPE_APPS_DOMAIN>>/ads/actuator/health`. This will bring you the **login page**. Note: You have to enter here your SAP Cloud Identity credentials. After successful login you get redirected to the advertisement service that returns you the status of the application.
+Open a browser to test whether your microservice runs in the cloud. Call the tenant-specific `approuterUri` URL as created [previously](#approuterUri). This will bring you the **login page**. Note: You have to enter here your SAP Cloud Identity credentials. After successful login you get redirected to the advertisement service that returns you the status of the application.
 
-This [`xs-app.json`](src/main/approuter/xs-app.json) file specifies how the approuter routes are mapped to the advertisement routes.
+> Note: This [`xs-app.json`](src/main/approuter/xs-app.json) file specifies how the approuter routes are mapped to the advertisement routes. E.g. `<<approuterUri>>/ads/actuator/health` maps to ` <<bulletinboardAdsUri>>/actuator/health`.
 
-Test the deployed REST Service on Cloud Foundry via the approuter url using the `Postman` chrome plugin together with the `Postman Interceptor` chrome plugin. You can import the [Postman collection](documentation/testing/spring-acl-cloudfoundry.postman_collection.json) and create an environment, which specifies the key-value pair `approuterUri`=`https://<<your tenant>>-approuter-<<ID>>.<<LANDSCAPE_APPS_DOMAIN>>`.
+Test the deployed REST Service on Cloud Foundry via the approuter URI using the `Postman` chrome plugin together with the `Postman Interceptor` chrome plugin. You can import the [Postman collection](documentation/testing/spring-acl-cloudfoundry.postman_collection.json) and create an environment, which specifies the key-value pair `approuterUri`=`<<your tenant-specific approuterUri>>`.
 
-Find a step-by-step description on how to test using `Postman` [here](https://github.com/SAP/cloud-bulletinboard-ads/blob/Documentation/Security/Exercise_24_MakeYourApplicationSecure.md).
+Find a more detailed description on how to test using `Postman` [in the basis sample](/spring-security-basis/README.md#steps-to-deploy-and-test-on-cloud-foundry).
 
 <a id='notes'></a>
 ## Implementation Details
@@ -413,8 +415,8 @@ For the PUT-request `/api/v1/ads/acl/grantPermissionsToUser/{advertisementId}` t
 - AclImpl.isGranted
 
 
-### Other requirements to Access Control Concepts not discussed here
-- Dual control principle. Example: an advertisement can only be published, when another user (with role...) has approved it.
+### Other requirements to Access Control concepts, not discussed here
+- Dual control principle. Example: an advertisement can only be published, when another user (with a dedicated role) has approved it.
 - Time-based access control. Example: A user has only access granted in a dedicated time-period, like a representative. This person should not be able to access instances that were created/updated in a time period before or after time period.
 
 ### <a name="features"></a>Notable Features
