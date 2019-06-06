@@ -15,11 +15,15 @@ As consequence, in order to test our Spring Boot application locally, or as part
 
 ## Table of Contents
 This document is divided into the following sections
+ - [Understanding OAuth 2.0 Components](#components) - introduces the SAP components that makes up the OAuth setup
  - [Use Cases](#usecases) - Role-Based Access Control (RBAC) and Attribute-Based Access Control (ABAC)
  - [Download and Installation](#setupandstart) - a description of how to use this project
  - [Steps to Deploy and Test on Cloud Foundry](#deployAndTestOnCF) - explains how to deploy and test the application on Cloud Foundry
  - [Further Refererences](#furtherReading) - references and further learning material
 
+<a id='components'></a>	
+## Understanding OAuth 2.0 Components	
+To better understand the content of this sample, you should have a rough understanding about the SAP CP OAuth 2.0 components that are introduced [here](/README.md#components).
 
 <a id='usecases'></a>
 ## Use Cases
