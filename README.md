@@ -4,7 +4,7 @@
 Implementing security in SAP Cloud Platform Applications?  
 The SAP Cloud Platform offers specific support to implement authentication and authorization for business users that access SAP Cloud Platform applications. As a developer of such an applications you have different options how to leverage the possibilities that SAP Cloud Platform offers. In this repository we want to showcase how this can be done. These samples demonstrate several different technologies to implement security authentication and authorization. Specifically, they integrate to SAP Cloud Platform XSUAA service using one of SAP's Container Security Libraries.
 
-### Overview of samples
+## Overview of Samples
 Each sample is provided in a separate module.
 
    Module | Description | Availability
