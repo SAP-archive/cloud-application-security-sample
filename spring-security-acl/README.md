@@ -345,7 +345,7 @@ Find a more detailed description on how to test using `Postman` [in the basis sa
 1. The application should support values-request for the application-specific `xs.user.attributes`, e.g. `/api/v1/attribute/group` : [AttributeFinderController](src/main/java/com/sap/cp/appsec/controllers/AttributeFinderController.java).
 1. Application security model consists of role-templates with references to attributes only: [xs-security.json](security/xs-security.json)
 
-### Permissions an bitwise masking 
+### Permissions and bitwise masking 
 By default, Spring ACL refers to [`BasePermission`](https://docs.spring.io/spring-security/site/apidocs/org/springframework/security/acls/domain/BasePermission.html) class for all available permissions (actions). 
 You may subclass `BasePermission` in order to define application specific permissions. In this case you also need to replace as part of the `lookupStrategy` bean the `DefaultPermissionFactory` by your custom `PermissionFactory` implementation.
 
