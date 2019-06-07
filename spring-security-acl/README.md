@@ -210,7 +210,7 @@ See also the Spring forum [here](http://forum.spring.io/forum/spring-projects/se
 Setup your development environment according to the description [here](/prerequisites/README.md).
 
 ### Start PostgreSQL database in docker container
-We need to make sure that a PostgreSQL database is running on the local machine, as referenced in `VCAP_SERVICES`. 
+We need to make sure that a PostgreSQL database is running on the local machine, as referenced in [`application-localdb.properties`](src/main/resources/application-localdb.properties). 
 
 The `docker-compose.yml` specifies all required docker containers.
 In order to start a fresh database container with PostgreSQL, execute
@@ -226,7 +226,7 @@ To run the application locally you have two options: start it directly via Maven
 
 In both cases, your application will be deployed to an embedded Tomcat web server and is visible at the address `http://localhost:8080/api/v1/ads/acl`.
 
-The provided [`localEnvironmentSetup`](localEnvironmentSetup.bat) shell script can be used to set the necessary values for local execution. Within your development IDE (Eclipse, IntelliJ), you need to define the following environment variables: `VCAP_APPLICATION`, `VCAP_SERVICES` and `SPRING_PROFILES_ACTIVE` - as done in the script.
+The provided [`localEnvironmentSetup`](localEnvironmentSetup.bat) shell script can be used to set the necessary values for local execution. Within your development IDE (Eclipse, IntelliJ), you need to define the following environment variables: `VCAP_APPLICATION` and `SPRING_PROFILES_ACTIVE` - as done in the script.
 
 ### Run on the command line
 Execute in terminal (within project root, which contains the`pom.xml`):
