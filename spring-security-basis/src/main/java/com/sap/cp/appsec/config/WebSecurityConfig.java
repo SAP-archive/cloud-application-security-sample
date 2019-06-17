@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -53,7 +52,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().denyAll() // deny anything not configured above
             .and()
                 .oauth2ResourceServer().jwt()
-					.decoder(getJwtDecoder())
 					.jwtAuthenticationConverter(getJwtAuthoritiesConverter());
 	}
 
@@ -68,6 +66,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	 * And configures other Jwt Validators.
 	 * @return jwt decoder
 	 */
+	@Bean
 	JwtDecoder getJwtDecoder() {
 		return new XsuaaJwtDecoderBuilder(xsuaaServiceConfiguration).build();
 	}
