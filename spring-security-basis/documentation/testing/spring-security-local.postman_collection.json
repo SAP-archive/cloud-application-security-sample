@@ -1,0 +1,148 @@
+{
+	"variables": [],
+	"info": {
+		"name": "Basis-Local-CPApplicationSecurity",
+		"_postman_id": "121b1c05-0cd4-9f83-2f60-3d4ca2202e3b",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "F4 /api/v1/attribute/confidentiality_level",
+			"request": {
+				"url": "http://localhost:8080/api/v1/attribute/confidentiality_level",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/api/v1/ads/",
+			"request": {
+				"url": "http://localhost:8080/api/v1/ads/",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{AUTH_advertiser}}",
+						"description": "Advertiser role with confidentiality_level = PUBLIC"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"title\":\"hi\",\n\t\"price\": \"50\",\n\t\"contact\": \"myemail\",\n\t\"currency\" : \"EUR\",\n\t\"confidentialityLevel\": \"CONFIDENTIAL\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/api/v1/ads/",
+			"request": {
+				"url": "http://localhost:8080/api/v1/ads/{id}",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "{{AUTH_advertiser}}",
+						"description": "Advertiser role with confidentiality_level = PUBLIC"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"title\":\"hi\",\n\t\"price\": \"50\",\n\t\"contact\": \"myemail\",\n\t\"currency\" : \"EUR\",\n\t\"confidentialityLevel\": \"CONFIDENTIAL\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/api/v1/ads/confidentiality/{confidentiality_level}",
+			"request": {
+				"url": "http://localhost:8080/api/v1/ads/confidentiality/{confidentiality_level}",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{AUTH_viewer_public}}",
+						"description": "Viewer role with confidentiality_level = PUBLIC"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{AUTH_viewer_confidential}}",
+						"description": "Viewer role with confidentiality_level = STRICTLY_CONFIDENTIAL",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/api/v1/ads/{id}",
+			"request": {
+				"url": "http://localhost:8080/api/v1/ads/{id}",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{AUTH_advertiser}}",
+						"description": "Advertiser role with confidentiality_level = PUBLIC"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": {id},\n    \"title\": \"some update\",\n    \"price\": 50,\n    \"contact\": \"myemail\",\n    \"currency\": \"EUR\",\n    \"category\": null,\n    \"purchasedOn\": null,\n    \"metadata\": {\n        \"version\": 0\n    }\n}\n"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/api/v1/ads/{id}",
+			"request": {
+				"url": "http://localhost:8080/api/v1/ads/{id}",
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{AUTH_advertiser}}",
+						"description": "Advertiser role with confidentiality_level = PUBLIC"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

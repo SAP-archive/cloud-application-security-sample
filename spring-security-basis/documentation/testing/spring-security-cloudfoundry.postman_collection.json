@@ -1,0 +1,90 @@
+{
+	"variables": [],
+	"info": {
+		"name": "Basis-CPApplicationSecurity-CF",
+		"_postman_id": "f8198ae8-d9b4-3851-7be7-e9f267606df6",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "/ads/actuator/health",
+			"request": {
+				"url": "{{approuterUri}}/ads/actuator/health",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"title\":\"test\",\n\t\"price\": \"40\",\n\t\"contact\": \"myemail\",\n\t\"currency\" : \"EUR\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/ads/api/v1/ads/",
+			"request": {
+				"url": "{{approuterUri}}/ads/api/v1/ads/",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch X-Csrf-Token for POST / PUT",
+			"request": {
+				"url": "{{approuterUri}}",
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-csrf-token",
+						"value": "fetch",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": "Prerequisite: Activate Postman Interceptor\n\nEnter the received JSESSIONID in the \"Cookie\" header"
+			},
+			"response": []
+		},
+		{
+			"name": "/ads/api/v1/ads/",
+			"request": {
+				"url": "{{approuterUri}}/ads/api/v1/ads/",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "x-csrf-token",
+						"value": "",
+						"description": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"title\":\"test\",\n\t\"price\": \"40\",\n\t\"contact\": \"myemail\",\n\t\"currency\" : \"EUR\",\n\t\"confidentialityLevel\" : \"PUBLIC\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/ads/api/v1/ads/{id}",
+			"request": {
+				"url": "{{approuterUri}}/ads/api/v1/ads/{id}",
+				"method": "DELETE",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

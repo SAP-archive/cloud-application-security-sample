@@ -1,0 +1,90 @@
+{
+  "xsappname": "bulletinboard",
+  "description": "Enabled bulletinboard for multi tenants",
+  "tenant-mode": "shared",
+  "scopes": [
+    {
+      "name": "$XSAPPNAME.Display",
+      "description": "Display Advertisements"
+    },
+    {
+      "name": "$XSAPPNAME.Update",
+      "description": "Update Advertisements"
+    }
+  ],
+  "attributes": [
+    {
+      "name": "confidentiality_level",
+      "description": "Level of Confidentiality",
+      "valueType" : "string",
+      "valueRequired" : true
+
+    }
+  ],
+  "role-templates": [
+    {
+      "name": "ViewerPUBLIC",
+      "description": "View Advertisements",
+      "scope-references": [
+        "$XSAPPNAME.Display"
+      ],
+      "attribute-references" : [
+        {
+          "name" : "confidentiality_level",
+          "default-values" : ["PUBLIC"]
+        }
+      ]
+    },
+    {
+      "name": "AdvertiserPUBLIC",
+      "description": "Maintain Advertisements",
+      "scope-references": [
+        "$XSAPPNAME.Display",
+        "$XSAPPNAME.Update"
+      ],
+      "attribute-references" : [
+        {
+          "name" : "confidentiality_level",
+          "default-values" : ["PUBLIC"]
+        }
+      ]
+    },
+    {
+      "name": "AdvertiserALL",
+      "description": "Maintain Advertisements",
+      "scope-references": [
+        "$XSAPPNAME.Display",
+        "$XSAPPNAME.Update"
+      ],
+      "attribute-references" : [
+        {
+          "name" : "confidentiality_level",
+          "default-values" : ["PUBLIC", "INTERNAL", "CONFIDENTIAL", "STRICTLY_CONFIDENTIAL"]
+        }
+      ]
+    }
+  ],
+  "role-collections": [
+    {
+      "name": "RC_ViewerPUBLIC",
+      "description": "Viewer (public)",
+      "role-template-references": [
+        "$XSAPPNAME.ViewerPUBLIC"
+      ]
+    },
+    {
+      "name": "RC_AdvertiserPUBLIC",
+      "description": "Advertiser (CRUD, public)",
+      "role-template-references": [
+        "$XSAPPNAME.AdvertiserPUBLIC"
+      ]
+    },
+    {
+      "name": "RC_AdvertiserALL",
+      "description": "Advertiser (CRUD, no restriction)",
+      "role-template-references": [
+        "$XSAPPNAME.AdvertiserALL"
+      ]
+    }
+  ]
+}

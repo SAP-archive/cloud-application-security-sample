@@ -9,7 +9,7 @@ applications:
   timeout: 360
   routes:
   - route: bulletinboard-ads-((ID)).((LANDSCAPE_APPS_DOMAIN))
-  path: target/demo-application-security-acl-1.0.jar
+  path: target/demo-application-security-basis-1.0.jar
   health-check-type: http
   health-check-http-endpoint: /actuator/health
   env:
@@ -19,7 +19,6 @@ applications:
     # When using Java community buildpack, increase startup times, especially when using Spring Boot.
     JAVA_OPTS: -Djava.security.egd=file:///dev/./urandom
   services:
-  - postgres-bulletinboard-ads
   - uaa-bulletinboard
 # Application Router as web server
 - name: approuter
