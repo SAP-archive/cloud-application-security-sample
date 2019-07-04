@@ -1,5 +1,6 @@
 package com.sap.cp.appsec.config;
 
+import com.sap.cloud.security.xsuaa.XsuaaServiceConfiguration;
 import com.sap.cloud.security.xsuaa.XsuaaServiceConfigurationDefault;
 import com.sap.cloud.security.xsuaa.XsuaaServicePropertySourceFactory;
 import com.sap.cloud.security.xsuaa.token.TokenAuthenticationConverter;
@@ -12,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -21,11 +23,10 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 
 @Configuration
 @EnableWebSecurity
-@PropertySource(factory = XsuaaServicePropertySourceFactory.class, value = {""})
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
-	private XsuaaServiceConfigurationDefault xsuaaServiceConfiguration;
+	private XsuaaServiceConfiguration xsuaaServiceConfiguration;
 
 	// configure Spring Security, demand authentication and specific scopes
 	@Override
@@ -57,16 +58,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	 * Customizes how GrantedAuthority are derived from a Jwt
 	 */
 	Converter<Jwt, AbstractAuthenticationToken> getJwtAuthoritiesConverter() {
-		return new CustomTokenAuthorizationsExtractor(xsuaaServiceConfiguration.getAppId(), AclAttribute.values());
-	}
-
-	@Bean
-	JwtDecoder jwtDecoder() {
-		return new XsuaaJwtDecoderBuilder(xsuaaServiceConfiguration).build();
-	}
-
-	@Bean
-	XsuaaServiceConfigurationDefault xsuaaConfig() {
-		return new XsuaaServiceConfigurationDefault();
+		return new TokenAuthenticationConverter(new CustomTokenAuthorizationsExtractor(xsuaaServiceConfiguration.getAppId(), AclAttribute.values()));
 	}
 }

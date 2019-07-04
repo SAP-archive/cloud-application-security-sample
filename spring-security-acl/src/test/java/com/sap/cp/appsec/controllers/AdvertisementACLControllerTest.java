@@ -2,7 +2,7 @@ package com.sap.cp.appsec.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sap.cloud.security.xsuaa.XsuaaServiceConfigurationDefault;
+import com.sap.cloud.security.xsuaa.XsuaaServiceConfiguration;
 import com.sap.cloud.security.xsuaa.test.JwtGenerator;
 import com.sap.cp.appsec.domain.AclAttribute;
 import com.sap.cp.appsec.dto.AdvertisementDto;
@@ -78,7 +78,7 @@ public class AdvertisementACLControllerTest {
     private AuditorAware<String> auditorAware;
 
     @Autowired
-    private XsuaaServiceConfigurationDefault xsuaaServiceConfiguration;
+    private XsuaaServiceConfiguration xsuaaServiceConfiguration;
 
     @Autowired
     private MockMvc mockMvc;
