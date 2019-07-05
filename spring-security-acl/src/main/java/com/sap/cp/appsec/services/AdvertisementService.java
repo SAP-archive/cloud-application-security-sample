@@ -1,6 +1,6 @@
 package com.sap.cp.appsec.services;
 
-import com.sap.cloud.security.xsuaa.token.TokenImpl;
+import com.sap.cloud.security.xsuaa.token.XsuaaToken;
 import com.sap.cp.appsec.domain.AclAttribute;
 import com.sap.cp.appsec.domain.Advertisement;
 import com.sap.cp.appsec.domain.AdvertisementAclRepository;
@@ -163,8 +163,8 @@ public class AdvertisementService {
 
     private String getUniqueUserName(String userName) {
         Object currentUsersPrincipal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String origin = currentUsersPrincipal instanceof TokenImpl ? ((TokenImpl) currentUsersPrincipal).getOrigin() : null;
-        return origin == null ? userName : TokenImpl.getUniquePrincipalName(origin, userName);
+        String origin = currentUsersPrincipal instanceof XsuaaToken ? ((XsuaaToken) currentUsersPrincipal).getOrigin() : null;
+        return origin == null ? userName : XsuaaToken.getUniquePrincipalName(origin, userName);
     }
 
     // TODO: contribute?? maybe this can be implemented by SidRetrievalStrategyImpl

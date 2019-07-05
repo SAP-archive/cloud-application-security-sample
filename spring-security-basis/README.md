@@ -163,7 +163,7 @@ cf create-service xsuaa application uaa-bulletinboard -c security/xs-security.js
 > Using the marketplace (`cf m`) you can see the backing services and its plans that are available on SAP CP and (!) you are entitled to use.
 
 ### Configure the manifest
-As a prerequisite step open the [../vars.yml](../vars.yml) file locally and replace the `ID` for example by your SAP account user name, to make the routes unique. You might want to adapt the `LANDSCAPE_APPS_DOMAIN` as well.
+As a prerequisite step open the [../vars.yml](../vars.yml) file locally and replace the `ID` for example by your SAP account user name, e.g. `p0123456`, to make the routes unique. You might want to adapt the `LANDSCAPE_APPS_DOMAIN` as well.
 
 ### Deploy the approuter and the advertisement service
 The application can be built and pushed using these commands (within root directory, which contains the `manifest.yml`):
@@ -176,13 +176,13 @@ cf push --vars-file ../vars.yml
 ### Create approuter route per tenant ID
 We make use of the `trial` subaccount. As you can see in the SAP CP Cockpit subaccounts have properties (see *Subaccount Details*) which of the most important one is the **Subdomain**. The Subdomain serves as the value for the technical property **Tenant ID**, e.g. `p0123456trial`.
 
-The Tenant ID is encoded in the url, for example `https://<<your tenant>>-approuter-<<ID>>.<<LANDSCAPE_APPS_DOMAIN>>`.
+The Tenant ID is encoded in the url, for example `https://<<your tenant ID>>-approuter-<<ID>>.<<LANDSCAPE_APPS_DOMAIN>>`.
 That's why we need to specify another route for the approuter application for each Tenant ID (subdomain name). For example:
 ```
-cf map-route approuter <<LANDSCAPE_APPS_DOMAIN e.g. cfapps.eu10.hana.ondemand.com>> -n <<your tenant e.g. p0123456trial>>-approuter-<<ID e.g. p0123456>>
+cf map-route approuter <<LANDSCAPE_APPS_DOMAIN e.g. cfapps.eu10.hana.ondemand.com>> -n <<your tenant ID e.g. p0123456trial>>-approuter-<<ID e.g. p0123456>>
 ```
 
-After that you should see at least those routes when calling `cf routes`:
+After that you should see routes similar to these when calling `cf routes`:
 ```
 space   host                                domain                           apps
 dev     bulletinboard-ads-p0123456          cfapps.eu10.hana.ondemand.com    bulletinboard-ads

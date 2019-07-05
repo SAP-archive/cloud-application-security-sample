@@ -33,3 +33,5 @@ class MethodSecurityConfig extends GlobalMethodSecurityConfiguration {
     }
 
 }
+
+

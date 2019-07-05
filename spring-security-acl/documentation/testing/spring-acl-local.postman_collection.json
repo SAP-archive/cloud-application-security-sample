@@ -1,8 +1,8 @@
 {
 	"variables": [],
 	"info": {
-		"name": "CPApplicationSecurity",
-		"_postman_id": "a43cca87-f0c9-8b63-415e-5f634e226401",
+		"name": "ACL-Local.CPApplicationSecurity",
+		"_postman_id": "b89b956a-ab0b-5afe-41e9-1bd9b733dd4b",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},

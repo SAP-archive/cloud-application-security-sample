@@ -1,28 +1,25 @@
 package com.sap.cp.appsec.config;
 
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.PUT;
+
 import com.sap.cloud.security.xsuaa.XsuaaServiceConfiguration;
-import com.sap.cloud.security.xsuaa.XsuaaServiceConfigurationDefault;
-import com.sap.cloud.security.xsuaa.XsuaaServicePropertySourceFactory;
 import com.sap.cloud.security.xsuaa.token.TokenAuthenticationConverter;
-import com.sap.cloud.security.xsuaa.token.authentication.XsuaaJwtDecoderBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-
-import static org.springframework.http.HttpMethod.*;
 
 @Configuration
 @EnableWebSecurity
-@PropertySource(factory = XsuaaServicePropertySourceFactory.class, value = {""})
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
@@ -53,22 +50,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
                 .oauth2ResourceServer().jwt()
 					.jwtAuthenticationConverter(getJwtAuthoritiesConverter());
-	}
-
-	@Bean
-	XsuaaServiceConfiguration xsuaaConfiguration() {
-		return new XsuaaServiceConfigurationDefault();
-	}
-
-	/**
-	 * Configures Nimbus JWK (JSON Web Keys) endpoint, from where it can download the PEM-encoded RSA public key for
-	 * decoding the token.
-	 * And configures other Jwt Validators.
-	 * @return jwt decoder
-	 */
-	@Bean
-	JwtDecoder getJwtDecoder() {
-		return new XsuaaJwtDecoderBuilder(xsuaaServiceConfiguration).build();
 	}
 
 	/**
