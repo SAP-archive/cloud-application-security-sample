@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.sap.cloud.security.xsuaa</groupId>
     <artifactId>demo-application-security-acl</artifactId>
-    <version>1.0</version>
+    <version>1.5.0</version>
     <packaging>jar</packaging>
 
     <name>demo-application-security-acl</name>
