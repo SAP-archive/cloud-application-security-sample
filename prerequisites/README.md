@@ -14,7 +14,7 @@
 
 <a id="headline-2"></a>
 ## Local Setup
-In case you like to run the example locally, you need to prepare your local system environment. Like the sample code this comes with no warranty and we can not provide support here. For further details see also [LICENSE](/LICENSE.pdf) file.
+In case you like to run the example locally, you need to prepare your local system environment. Like the sample code this comes with no warranty and we can not provide support here. For further details see also [LICENSE](/LICENSE) file.
 
 <a id="headline-2.2"></a>
 ### Java 8 JDK
@@ -82,7 +82,7 @@ Each module is a separate Java project in a separate folder as part of this Git 
 <a id="headline-3.1"></a>
 ### Clone Git Repository
 The project can be cloned using this the following URL: `git@github.com:SAP/cloud-application-security-sample.git`.
-Either use the command line and type `git clone https://github.com/SAP/cloud-application-security-sample.git` or use the Git perspective in Eclipse and choose `Clone a Git Repostory`.
+Either use the command line and type `git clone https://github.com/SAP/cloud-application-security-sample.git` or use the Git perspective in Eclipse and choose `Clone a Git Repository`.
 
 > Note: In case SSH is not working make use of the HTTPS link when cloning the repository.
 
