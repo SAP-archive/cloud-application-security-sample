@@ -79,7 +79,7 @@ Setup your development environment according to the description [here](/prerequi
 ### Run the application in your local environment
 To run the application locally, you have two options: start it directly via Maven on the command line or within your IDE (Eclipse, IntelliJ).
 
-In both cases, your application will be deployed to an embedded Tomcat web server and is visible at the address `http://localhost:8080/api/v1/ads`.
+In both cases, your application will be deployed to an embedded Tomcat web server and will be accessible at the address `http://localhost:8080/api/v1/ads`. The endpoints of the application are secured, i.e. the endpoints will response with status code `401` (Unauthenticated) unless you provide a valid JWT token.
 
 > **Note:** The application needs to interact with the XSUAA service to validate the JWT tokens. To avoid this interaction during test execution and as well during local testing we connect to a **local XSUAA Mock Web Server** instead. This Mock Web Server serves some XSUAA service endpoints such as `/token_keys`.  With activation of `uaamock` profile, the Mock Web Server gets started and configured according to the settings specified in the [application-uaamock.properties](src/main/resources/application-uaamock.properties) file.
 
@@ -87,7 +87,7 @@ In both cases, your application will be deployed to an embedded Tomcat web serve
 
 The provided [`localEnvironmentSetup`](localEnvironmentSetup.bat) shell script can be used to set the necessary values for local execution. Within your development IDE (Eclipse, IntelliJ), you need to define the `VCAP_APPLICATION` and the `SPRING_PROFILES_ACTIVE` environment variables - as done in the script.
 
-### Run on the command line
+#### Run on the command line
 Execute in terminal (within project root, which contains the `pom.xml`):
 ```bash
 source localEnvironmentSetup.sh
@@ -100,12 +100,12 @@ localEnvironmentSetup.bat
 mvn spring-boot:run
 ```
 
-### Run in Eclipse (STS)
+#### Run in Eclipse (STS)
 In Eclipse Spring Tool Suite (STS), you can import the project as an existing Maven project. There you can start the main method in `com.sap.cp.appsec.Application`.
 You can also right-click on the class in the Package Explorer, and select `Run As` - `Spring Boot App`.  
 > Make sure that you have set the same environment variables in the Run Configuration as specified in the [`localEnvironmentSetup`](localEnvironmentSetup.bat) script.
 
-### Excursion: JWT Token
+#### Excursion: JWT Token
 The application endpoints are secured, that means you should get for any endpoint (except for `\actuator\health`) an 401 ("unauthorized") status code. The application expects a digitally signed JWT as part of the Authorization header to simulate that you are an authenticated user with the scopes/roles required to access the protected endpoints.
 
 Have a look into the [`AdvertisementControllerTest`](src/test/java/com/sap/cp/appsec/controllers/AdvertisementControllerTest.java) test class. There we make use of the `JwtGenerator` from the [`spring-xsuaa-test` library](https://github.com/SAP/cloud-security-xsuaa-integration/blob/master/spring-xsuaa-test/README.md) for generating some JWT tokens with different scopes and attribute values in order to test whether the application behaves correctly and the endpoints are properly protected:
@@ -121,7 +121,7 @@ Have a look into the [`AdvertisementControllerTest`](src/test/java/com/sap/cp/ap
 For a better understanding you can set a breakpoint in the `setup` method of the `AdvertismentControllerTest` test, start the test in debugging mode, fetch a JWT and decode it on this web site: https://jwt.io/.
 
 
-### Test using Postman
+#### Test using Postman
 Now you are ready to test the application manually using the [`Postman` chrome plugin](https://chrome.google.com/webstore/detail/postman/fhbjgbiflinjbdggehcddcbncdddomop).
 
 Test the REST endpoint `http://localhost:8080/api/v1/ads` manually using the `Postman` chrome extension.
