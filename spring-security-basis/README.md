@@ -1,6 +1,6 @@
 # Basic Access Limitation on Functions and Instances
 
-The following steps will explain how to secure applications in SAP Cloud Platform, CloudFoundry which are built based on the Spring Boot.
+The following steps will explain how to secure applications in SAP Cloud Platform, Cloud Foundry (SAP CP CF) which are built based on the Spring Boot.
 
 ## Goal of this sample project
 
@@ -15,7 +15,7 @@ As consequence, in order to test our Spring Boot application locally, or as part
 
 ## Table of Contents
 This document is divided into the following sections
- - [Understanding OAuth 2.0 Components](#components) - introduces the SAP components that makes up the OAuth setup
+ - [Understanding OAuth 2.0 Components](#components) - introduces the SAP components that make up the OAuth setup
  - [Use Cases](#usecases) - Role-Based Access Control (RBAC) and Attribute-Based Access Control (ABAC)
  - [Download and Installation](#setupandstart) - a description of how to use this project
  - [Steps to Deploy and Test on Cloud Foundry](#deployAndTestOnCF) - explains how to deploy and test the application on Cloud Foundry
@@ -32,7 +32,7 @@ In general we want to distinguish here between **Role-Based Access Control (RBAC
 RBAC controls access based on the roles that users have within the system whereas ABAC is more flexible as you can use attributes (user specific, resource / application specific attributes or environmental conditions) to implement instance-based access control. Any attribute can be used as "filter" to allow a more fine-grain access control to a resource.
 
 ### RBAC Use Case 1: Functional Access Restriction
-Your application wants to limit the access to particular application functions, but there is no further restrictions on data level required. In this case the application developer needs to introduce a set of `Roles` as part of the security model and attach these `Role`-checks to the functions that should be secured. With that only users who has the required roles assigned are permitted to perform the restricted functions.
+Your application wants to limit the access to particular application functions, but there are no further restrictions on data level required. In this case the application developer needs to introduce a set of `Roles` as part of the security model and attach these `Role`-checks to the functions that should be secured. With that only users who have the required roles assigned are permitted to perform the restricted functions.
 
 In our example:
 - User with role "Viewer" (scope: "Display") can read all public advertisements (in his tenant).
@@ -77,7 +77,7 @@ Attributes and Role-templates are specified by the application developer as part
 Setup your development environment according to the description [here](/prerequisites/README.md). There is no need to install **Docker**.
 
 ### Run the application in your local environment
-To run the application locally you have two options: start it directly via Maven on the command line or within your IDE (Eclipse, IntelliJ).
+To run the application locally, you have two options: start it directly via Maven on the command line or within your IDE (Eclipse, IntelliJ).
 
 In both cases, your application will be deployed to an embedded Tomcat web server and is visible at the address `http://localhost:8080/api/v1/ads`.
 
@@ -101,7 +101,7 @@ mvn spring-boot:run
 ```
 
 ### Run in Eclipse (STS)
-In Eclipse Spring Tool Suite (STS) you can import the project as an existing Maven project. There you can start the main method in `com.sap.cp.appsec.Application`.
+In Eclipse Spring Tool Suite (STS), you can import the project as an existing Maven project. There you can start the main method in `com.sap.cp.appsec.Application`.
 You can also right-click on the class in the Package Explorer, and select `Run As` - `Spring Boot App`.  
 > Make sure that you have set the same environment variables in the Run Configuration as specified in the [`localEnvironmentSetup`](localEnvironmentSetup.bat) script.
 
