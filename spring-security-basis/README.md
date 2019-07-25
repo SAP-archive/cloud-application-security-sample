@@ -106,7 +106,7 @@ You can also right-click on the class in the Package Explorer, and select `Run A
 > Make sure that you have set the same environment variables in the Run Configuration as specified in the [`localEnvironmentSetup`](localEnvironmentSetup.bat) script.
 
 #### Excursion: JWT Token
-The application endpoints are secured, that means you should get for any endpoint (except for `\actuator\health`) an 401 ("unauthorized") status code. The application expects a digitally signed JWT as part of the Authorization header to simulate that you are an authenticated user with the scopes/roles required to access the protected endpoints.
+The application endpoints are secured, that means you should get for any endpoint (except for `/actuator/health`) an 401 ("unauthorized") status code. The application expects a digitally signed JWT as part of the Authorization header to simulate that you are an authenticated user with the scopes/roles required to access the protected endpoints.
 
 Have a look into the [`AdvertisementControllerTest`](src/test/java/com/sap/cp/appsec/controllers/AdvertisementControllerTest.java) test class. There we make use of the `JwtGenerator` from the [`spring-xsuaa-test` library](https://github.com/SAP/cloud-security-xsuaa-integration/blob/master/spring-xsuaa-test/README.md) for generating some JWT tokens with different scopes and attribute values in order to test whether the application behaves correctly and the endpoints are properly protected:
 
