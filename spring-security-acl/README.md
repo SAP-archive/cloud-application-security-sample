@@ -1,10 +1,10 @@
 # Access Limitation on Instances using Spring ACL
 
-Assume you've understood how Spring-based applications can be basically secured as explained [here](/spring-security-basis), this sample project goes one step further, demonstrating instance-based access control using access control lists (ACL) in applications based on Spring Boot and deployed on SAP Cloud Platform, CloudFoundry.
+Assume you've understood how Spring-based applications can be basically secured as explained [here](/spring-security-basis), this sample project goes one step further, demonstrating instance-based access control using access control lists (ACL) in applications based on Spring Boot and deployed on SAP Cloud Platform, Cloud Foundry (SAP CP CF).
 
 ## Goal of this sample project
 
-This [Spring Boot 2.0](http://projects.spring.io/spring-boot/) demo application shows how to implement instance-based access control in Spring based SAP Cloud Platform applications. It leverages [Spring Security ACL](https://github.com/spring-projects/spring-security) and integrates to SAP Cloud Platform XSUAA service using the [SAP Container Security Library (Java)](https://github.com/SAP/cloud-security-xsuaa-integration), which is available on [maven central](https://search.maven.org/search?q=com.sap.cloud.security).
+This [Spring Boot 2.0](http://projects.spring.io/spring-boot/) demo application shows how to implement instance-based access control in Spring-based SAP Cloud Platform applications. It leverages [Spring Security ACL](https://github.com/spring-projects/spring-security) and integrates to SAP Cloud Platform XSUAA service using the [SAP Container Security Library (Java)](https://github.com/SAP/cloud-security-xsuaa-integration), which is available on [maven central](https://search.maven.org/search?q=com.sap.cloud.security).
 
 Instances, you want to protect, could be **business objects** (e.g. procurement order), **data records** on the database (e.g. leave request) or any other **resource**.
 
@@ -50,7 +50,7 @@ Attribute-Based Access Control is explained and implemented with this [basis sam
 <a id='examples'></a>
 ## Use Cases
 
-### Create an protect-worthy instance and assign initial permissions to owner
+### Create a protect-worthy instance and assign initial permissions to owner
 The user with log-on name `advertiser` creates a new advertisement (id = `55`). You can test with POST-request `/api/v1/ads/acl/` that the following entries are created in the postgreSql `test` database.
 
 - For the user principal `advertiser` an entry gets created (if not yet there) in the `ACL_SID` table:
@@ -353,7 +353,7 @@ By default the `DefaultPermissionGrantingStrategy` does only support exact mask 
 - https://github.com/spring-projects/spring-security/issues/1388
 - https://github.com/spring-projects/spring-security/issues/2571
 
-### Support of paginated Rest APIs
+### Support of paginated REST APIs
 With Spring ACL you can reject unauthorized access of instances on method level using `@PreAuthorize("hasPermission(<object>,<permission>)")` or `@PreAuthorize("hasPermission(<id>, <type>, <permission>)")`. Furthermore you can filter the result set by making use of `@PostAuthorize("hasPermission(<object>, <permission>)")`, after the result set has been retrieved from underlying layers (often database). This is obviously not the best approach in terms of performance, too many useless objects are retrieved but evicted by the filter. Let's consider pagination and assume a page size of 20 items. Spring Data repository returns up to 20 items, but all of them needs to be filtered, as the caller is not granted to access those... 
 
 As consequence we have implemented as part of our Spring Data repository our own SQL CE function to fetch only these instances from the database, the user has granted access to.
