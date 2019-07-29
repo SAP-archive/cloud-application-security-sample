@@ -9,7 +9,7 @@ applications:
   timeout: 360
   routes:
   - route: bulletinboard-ads-((ID)).((LANDSCAPE_APPS_DOMAIN))
-  path: target/demo-application-security-acl-1.0.jar
+  path: target/demo-application-security-acl.jar
   health-check-type: http
   health-check-http-endpoint: /actuator/health
   env:
