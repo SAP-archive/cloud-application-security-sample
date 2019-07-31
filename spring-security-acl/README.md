@@ -354,7 +354,7 @@ By default the `DefaultPermissionGrantingStrategy` does only support exact mask 
 - https://github.com/spring-projects/spring-security/issues/2571
 
 ### Support of paginated REST APIs
-With Spring ACL you can reject unauthorized access of instances on method level using `@PreAuthorize("hasPermission(<object>,<permission>)")` or `@PreAuthorize("hasPermission(<id>, <type>, <permission>)")`. Furthermore you can filter the result set by making use of `@PostAuthorize("hasPermission(<object>, <permission>)")`, after the result set has been retrieved from underlying layers (often database). This is obviously not the best approach in terms of performance, too many useless objects are retrieved but evicted by the filter. Let's consider pagination and assume a page size of 20 items. Spring Data repository returns up to 20 items, but all of them needs to be filtered, as the caller is not granted to access those... 
+With Spring ACL you can reject unauthorized access of instances on method level using `@PreAuthorize("hasPermission(<object>,<permission>)")` or `@PreAuthorize("hasPermission(<id>, <type>, <permission>)")`. Furthermore you can filter the result set by making use of `@PostAuthorize("hasPermission(<object>, <permission>)")`, after the result set has been retrieved from underlying layers (often database). This is obviously not the best approach in terms of performance, too many useless objects are retrieved but evicted by the filter. Let's consider pagination and assume a page size of 20 items. Spring Data repository returns up to 20 items, but all of them need to be filtered, as the caller is not granted to access those... 
 
 As consequence we have implemented as part of our Spring Data repository our own SQL CE function to fetch only these instances from the database, the user has granted access to.
 
@@ -421,7 +421,7 @@ For the PUT-request `/api/v1/ads/acl/grantPermissionsToUser/{advertisementId}` t
 
 ### <a name="features"></a>Notable Features
  - REST endpoints using Spring Web MVC (`@RestController`)
- - Tests (Servlet with `RestTemplate`, `MockMvc`, JUnit, Mockito, Hamcrest
+ - Tests (Servlet with `RestTemplate`, `MockMvc`, JUnit, Mockito, Hamcrest)
  - JPA Implementation: Hibernate
  - Spring Data (repository)
  - Security with Spring Security and Xsuaa
