@@ -1,7 +1,7 @@
 package com.sap.cp.appsec.config;
 
+import com.sap.cloud.security.xsuaa.token.SpringSecurityContext;
 import com.sap.cloud.security.xsuaa.token.Token;
-import com.sap.xs2.security.container.SecurityContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
@@ -22,7 +22,7 @@ public class PersistenceConfig {
 
         @Override
         public Optional<String> getCurrentAuditor() {
-            Token token = SecurityContext.getToken();
+            Token token = SpringSecurityContext.getToken();
             return Optional.ofNullable(token.getLogonName());
         }
     }

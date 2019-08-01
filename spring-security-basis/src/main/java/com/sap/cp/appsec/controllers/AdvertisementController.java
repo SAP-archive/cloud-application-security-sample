@@ -11,6 +11,7 @@ import javax.validation.constraints.Min;
 
 import java.util.Optional;
 
+import com.sap.cloud.security.xsuaa.token.SpringSecurityContext;
 import com.sap.cloud.security.xsuaa.token.Token;
 import com.sap.cp.appsec.domain.Advertisement;
 import com.sap.cp.appsec.domain.AdvertisementRepository;
@@ -105,7 +106,7 @@ public class AdvertisementController {
 
     @GetMapping("/pages/{pageId}")
     public ResponseEntity<AdvertisementListDto> readPage(@PathVariable("pageId") int pageId) {
-        Token jwtToken = SecurityContext.getToken();
+        Token jwtToken = SpringSecurityContext.getToken();
         Page<Advertisement> page = adsRepo
                 .findAll(where(isCreatedBy(jwtToken.getLogonName()).or(confidentialityIsEqualOrLess(
                         jwtToken.getXSUserAttribute(ConfidentialityLevel.ATTRIBUTE_NAME)))),
@@ -118,7 +119,7 @@ public class AdvertisementController {
     @GetMapping("/{id}")
     public AdvertisementDto readById(@PathVariable("id") @Min(0) Long id) {
         MDC.put("endpoint", "GET: " + PATH + "/" + id);
-        Token jwtToken = SecurityContext.getToken();
+        Token jwtToken = SpringSecurityContext.getToken();
 
         // here we apply a filter on database leveraging Spring Data JPA: isCreatedBy or hasAttributeValue
         // find further info here: https://docs.spring.io/spring-data/jpa/docs/current/reference/html/
