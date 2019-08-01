@@ -1,7 +1,7 @@
 package com.sap.cp.appsec.config;
 
+import com.sap.cloud.security.xsuaa.token.SpringSecurityContext;
 import com.sap.cloud.security.xsuaa.token.Token;
-import com.sap.xs2.security.container.SecurityContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -26,9 +26,9 @@ public class PersistenceConfig {
             String user;
             Logger logger = LoggerFactory.getLogger(getClass());
 
-            Token token = SecurityContext.getToken();
+            Token token = SpringSecurityContext.getToken();
             user = token.getLogonName();
-            logger.info("token for user " + user + " initialized");
+            logger.info("token for user {} initialized", user);
             return Optional.ofNullable(user);
         }
     }
