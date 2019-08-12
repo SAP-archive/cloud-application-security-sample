@@ -6,7 +6,6 @@ applications:
 - name: bulletinboard-ads
   instances: 1
   memory: 1G
-  timeout: 360
   routes:
   - route: bulletinboard-ads-((ID)).((LANDSCAPE_APPS_DOMAIN))
   path: target/demo-application-security-basis.jar
@@ -26,7 +25,6 @@ applications:
   - route: approuter-((ID)).((LANDSCAPE_APPS_DOMAIN))
   path: src/main/approuter
   memory: 128M
-  timeout: 360
   env:
     TENANT_HOST_PATTERN: "^(.*)-approuter-((ID)).((LANDSCAPE_APPS_DOMAIN))"
     destinations: >
