@@ -22,7 +22,6 @@ import com.sap.cp.appsec.dto.PageHeaderBuilder;
 import com.sap.cp.appsec.exceptions.BadRequestException;
 import com.sap.cp.appsec.exceptions.NotAuthorizedException;
 import com.sap.cp.appsec.exceptions.NotFoundException;
-import com.sap.xs2.security.container.SecurityContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;

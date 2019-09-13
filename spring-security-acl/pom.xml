@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.sap.cloud.security.xsuaa</groupId>
     <artifactId>demo-application-security-acl</artifactId>
-    <version>1.6.0</version>
+    <version>2.0.0</version>
     <packaging>jar</packaging>
 
     <name>demo-application-security-acl</name>
@@ -24,7 +24,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
         <spring.security.version>5.2.0.M1</spring.security.version>
-        <sap.cloud.security.version>1.6.0</sap.cloud.security.version>
+        <sap.cloud.security.version>2.0.0</sap.cloud.security.version>
     </properties>
 
     <dependencies>
