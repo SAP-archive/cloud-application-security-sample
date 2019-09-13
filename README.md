@@ -9,8 +9,8 @@ Each sample is provided in a separate module.
 
 Module | Description | Availability | Prerequisite
 ---- | -------- | ---- | ---
-[spring-security-basis](spring-security-basis) | This module shows how to implement basic access control in Spring-based SAP Cloud Platform applications. It leverages Spring Security 5.x and integrates to SAP Cloud Platform XSUAA service (OAuth Resource Server) using the SAP Container Security Library (Java), which is available on maven central. | 2019-06 | [openSAP course: Cloud-Native Development with SAP CP](https://open.sap.com/courses/cp5) 
-[spring-security-acl](spring-security-acl) | This module shows the usage of Spring Security ACL to implement instance-based access control in Spring-based SAP Cloud Platform applications. | 2019-01 | Module: [spring-security-basis](spring-security-basis) 
+[spring-security-basis](spring-security-basis) | This module shows how to implement basic access control in Spring-based SAP Cloud Platform applications. It leverages Spring Security 5.x and integrates to SAP Cloud Platform XSUAA service (OAuth Resource Server) using the SAP Container Security Library (Java), which is available on maven central. Furthermore the sample demonstrates a multi-tenancy setup and how to implement JUnit tests. | 2019-06 | [openSAP course: Cloud-Native Development with SAP CP](https://open.sap.com/courses/cp5) 
+[spring-security-acl](spring-security-acl) | This module shows the usage of Spring Security ACL to implement instance-based access control in Spring-based SAP Cloud Platform applications. Furthermore the sample demonstrates a multi-tenancy setup and how to implement JUnit tests. | 2019-01 | Module: [spring-security-basis](spring-security-basis) 
 
    
 <a id='components'></a>
