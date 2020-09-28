@@ -1,3 +1,5 @@
+[![REUSE status](https://api.reuse.software/badge/github.com/SAP-samples/cloud-application-security-sample)](https://api.reuse.software/info/github.com/SAP-samples/cloud-application-security-sample)
+
 # Cloud Application Security Samples
 
 ## Description
@@ -72,6 +74,6 @@ Hence, every microservice has to maintain a service binding to the XSUAA that pr
 ## How to obtain support
 For any question please [open an issue](https://github.com/SAP/cloud-application-security-sample/issues/new) in GitHub and make use of the [labels](https://github.com/SAP/cloud-application-security-sample/labels) in order to refer to the sample and to categorize the kind of the issue.
 
-## License
-Copyright (c) 2019 SAP SE or an SAP affiliate company. All rights reserved.
-This file is licensed under the Apache Software License, v.2 except as noted otherwise in the [LICENSE](/LICENSE.pdf) file and in the [CREDITS](/CREDITS) file.
+# License
+Copyright (c) 2019-2020 SAP SE or an SAP affiliate company. All rights reserved.
+This file is licensed under the Apache Software License, version 2.0 except as noted otherwise in the [LICENSE](LICENSES/Apache-2.0.txt) file.
