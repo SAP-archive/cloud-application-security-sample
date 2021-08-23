@@ -18,8 +18,8 @@
 
 <a id="headline-2.1"></a>
 ### Proxy Settings
-- Windows: Download and run [proxyEnv.cmd](https://github.wdf.sap.corp/cc-java-dev/cc-coursematerial/tree/master/CoursePrerequisites/localEnvSetup/proxyEnv.cmd) to permanently set the proxy settings in your environment.
-- MacOSX: Add the lines inside [proxyEnv.bash_profile](https://github.wdf.sap.corp/cc-java-dev/cc-coursematerial/tree/master/CoursePrerequisites/localEnvSetup/proxyEnv.bash_profile) to your .bash_profile to permanently set the proxy settings in your environment. After setting this, you need to re-login (or reboot).
+- Windows: Download and run [proxyEnv.cmd](https://github.wdf.sap.corp/cc-java-dev/cc-coursematerial/tree/main/CoursePrerequisites/localEnvSetup/proxyEnv.cmd) to permanently set the proxy settings in your environment.
+- MacOSX: Add the lines inside [proxyEnv.bash_profile](https://github.wdf.sap.corp/cc-java-dev/cc-coursematerial/tree/main/CoursePrerequisites/localEnvSetup/proxyEnv.bash_profile) to your .bash_profile to permanently set the proxy settings in your environment. After setting this, you need to re-login (or reboot).
 
 <a id="headline-2.2"></a>
 ### Java 8 JDK
@@ -41,7 +41,7 @@ It takes care of installing the correct Maven version, so no manual local instal
 However, you still need to provide Maven configuration on your computer:
  - Create the directory `~/.m2/`, where `~` is your home directory, e.g. `C:\Users\D012345`.
  > Note: Windows explorer does not allow you create a directory ".name" - you have to add a dot at the end, i.e. ".name.", which will then be removed.
- - Download the [settings.xml](https://github.wdf.sap.corp/cc-java-dev/cc-coursematerial/blob/master/CoursePrerequisites/localEnvSetup/settings.xml) configuration file and save it in the `.m2` directory created in the previous step.
+ - Download the [settings.xml](https://github.wdf.sap.corp/cc-java-dev/cc-coursematerial/blob/main/CoursePrerequisites/localEnvSetup/settings.xml) configuration file and save it in the `.m2` directory created in the previous step.
 
 To use the maven wrapper start a spring boot application, execute
 - **`./mvnw spring-boot:run` (Linux/Git bash)** or

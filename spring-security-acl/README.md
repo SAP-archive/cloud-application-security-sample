@@ -200,7 +200,7 @@ deleteAcl(ObjectIdentity objectIdentity, boolean deleteChildren)
 ```
 This should be called whenever an object instance, for which acl entries are mapped, is deleted.
 
-But this will not remove all / some permissions from a dedicated user principal. This needs to be implemented in the ACL Service wrapper class, namely [AclSupport](https://github.wdf.sap.corp/CPSecurity/cp-application-security/blob/master/spring-security-acl/src/main/java/com/sap/cp/appsec/security/AclSupport.java).
+But this will not remove all / some permissions from a dedicated user principal. This needs to be implemented in the ACL Service wrapper class, namely [AclSupport](https://github.wdf.sap.corp/CPSecurity/cp-application-security/blob/main/spring-security-acl/src/main/java/com/sap/cp/appsec/security/AclSupport.java).
 
 See also the Spring forum [here](http://forum.spring.io/forum/spring-projects/security/72871-delete-all-ace-s-in-multiple-acls-for-a-given-sid).
 
@@ -338,7 +338,7 @@ Find a more detailed description on how to test using `Postman` [in the basis sa
 
 1. Setup Spring ACL database table (using liquibase): [database changelog](src/main/resources/db/changelog), [database population](src/main/resources/db/population)
 1. Configure Spring ACL: [AclConfig](src/main/java/com/sap/cp/appsec/config/AclConfig.java) and [AclAuditLogger](src/main/java/com/sap/cp/appsec/config/AclAuditLogger.java)
-1. Convenience wrapper for Spring `AclService` implementation: [AclSupport](https://github.wdf.sap.corp/CPSecurity/cp-application-security/blob/master/spring-security-acl/src/main/java/com/sap/cp/appsec/security/AclSupport.java)
+1. Convenience wrapper for Spring `AclService` implementation: [AclSupport](https://github.wdf.sap.corp/CPSecurity/cp-application-security/blob/main/spring-security-acl/src/main/java/com/sap/cp/appsec/security/AclSupport.java)
 1. Assign user's attributes to Spring Security Context: [CustomTokenAuthorizationsExtractor](src/main/java/com/sap/cp/appsec/security/CustomTokenAuthorizationsExtractor.java).
 1. Assign and validate instance permissions: [AdvertisementService](src/main/java/com/sap/cp/appsec/services/AdvertisementService.java).
 1. Support of pagination is implemented with Spring Data and SQL CE functions: [AdvertisementAclRepository](src/main/java/com/sap/cp/appsec/domain/AdvertisementAclRepository.java)

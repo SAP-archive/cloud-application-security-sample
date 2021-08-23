@@ -11,7 +11,7 @@ In order to limit access to certain instances, you can restrict the access to sp
 The microservice is a Spring boot version of the code developed in the [openSAP course: Cloud-Native Development with SAP Cloud Platform](https://open.sap.com/courses/cp5) and runs in the Cloud Foundry environment within SAP Business Technology Platform.
 
 > Note: The new `SAP Java Client Security Library` validates the access token, which is in JSON Web Token format, locally (offline). For verifying the signature of the access token it periodically retrieves and caches the JSON Web Keys (JWK) from the Authorization Server.
-As consequence, in order to test our Spring Boot application locally, or as part of our JUnit tests, we have to provide a Mock Web Server that mocks the `/token_keys` endpoint that returns JWKs. Thus, this sample starts and configures a Mock Web Server for the OAuth 2.0 Authorization Server as explained [here](https://github.com/spring-projects/spring-security/tree/master/samples/boot/oauth2resourceserver). The mock server is only started in case the `uaamock` Spring profile is active.
+As consequence, in order to test our Spring Boot application locally, or as part of our JUnit tests, we have to provide a Mock Web Server that mocks the `/token_keys` endpoint that returns JWKs. Thus, this sample starts and configures a Mock Web Server for the OAuth 2.0 Authorization Server as explained [here](https://github.com/spring-projects/spring-security/tree/main/samples/boot/oauth2resourceserver). The mock server is only started in case the `uaamock` Spring profile is active.
 
 ## Table of Contents
 This document is divided into the following sections
@@ -83,7 +83,7 @@ In both cases, your application will be deployed to an embedded Tomcat web serve
 
 > **Note:** The application needs to interact with the XSUAA service to validate the JWT tokens. To avoid this interaction during test execution and as well during local testing we connect to a **local XSUAA Mock Web Server** instead. This Mock Web Server serves some XSUAA service endpoints such as `/token_keys`.  With activation of `uaamock` profile, the Mock Web Server gets started and configured according to the settings specified in the [application-uaamock.properties](src/main/resources/application-uaamock.properties) file.
 
-> You can find [here](https://github.com/SAP/cloud-security-xsuaa-integration/tree/master/spring-xsuaa-mock#xsuaa-security-xsuaa-mock-library) a more detailed description on how to setup the XSUAA Mock Web Server in your Spring boot application.
+> You can find [here](https://github.com/SAP/cloud-security-xsuaa-integration/tree/main/spring-xsuaa-mock#xsuaa-security-xsuaa-mock-library) a more detailed description on how to setup the XSUAA Mock Web Server in your Spring boot application.
 
 The provided [`localEnvironmentSetup`](localEnvironmentSetup.bat) shell script can be used to set the necessary values for local execution. Within your development IDE (Eclipse, IntelliJ), you need to define the `VCAP_APPLICATION` and the `SPRING_PROFILES_ACTIVE` environment variables - as done in the script.
 
@@ -108,7 +108,7 @@ You can also right-click on the class in the Package Explorer, and select `Run A
 #### Excursion: JWT Token
 The application endpoints are secured, that means you should get for any endpoint (except for `/actuator/health`) an 401 ("unauthorized") status code. The application expects a digitally signed JWT as part of the Authorization header to simulate that you are an authenticated user with the scopes/roles required to access the protected endpoints.
 
-Have a look into the [`AdvertisementControllerTest`](src/test/java/com/sap/cp/appsec/controllers/AdvertisementControllerTest.java) test class. There we make use of the `JwtGenerator` from the [`spring-xsuaa-test` library](https://github.com/SAP/cloud-security-xsuaa-integration/blob/master/spring-xsuaa-test/README.md) for generating some JWT tokens with different scopes and attribute values in order to test whether the application behaves correctly and the endpoints are properly protected:
+Have a look into the [`AdvertisementControllerTest`](src/test/java/com/sap/cp/appsec/controllers/AdvertisementControllerTest.java) test class. There we make use of the `JwtGenerator` from the [`spring-xsuaa-test` library](https://github.com/SAP/cloud-security-xsuaa-integration/blob/main/spring-xsuaa-test/README.md) for generating some JWT tokens with different scopes and attribute values in order to test whether the application behaves correctly and the endpoints are properly protected:
 
 - missing JWT should result in `not authenticated (401)`
 - expired or invalid signed JWT should result in `not authenticated (401)`
@@ -235,5 +235,5 @@ Call again your application endpoints via the approuter Uri using the `Postman` 
 # <a name="furtherReading"></a>Further References
 - [openSAP course: Cloud-Native Development with SAP Cloud Platform](https://open.sap.com/courses/cp5)
 - [Baeldung tutorial: A Custom Security Expression with Spring Security](https://www.baeldung.com/spring-security-create-new-custom-security-expression)
-- [Spring Security Mock Authorization Server for providing token keys](https://github.com/spring-projects/spring-security/tree/master/samples/boot/oauth2resourceserver)
+- [Spring Security Mock Authorization Server for providing token keys](https://github.com/spring-projects/spring-security/tree/main/samples/boot/oauth2resourceserver)
 - [Spring Security Docs: Expression-Based Access Control](https://docs.spring.io/spring-security/site/docs/current/reference/html/el-access.html)
