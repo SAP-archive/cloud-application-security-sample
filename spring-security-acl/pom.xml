@@ -8,7 +8,7 @@
     <packaging>jar</packaging>
 
     <name>demo-application-security-acl</name>
-    <description>Demo project for Spring Boot using Spring Security ACL. It integrates to SAP Cloud Platform XSUAA
+    <description>Demo project for Spring Boot using Spring Security ACL. It integrates to SAP Business Technology Platform XSUAA
         service using the Java Client Security Library offered by SAP.
     </description>
 
