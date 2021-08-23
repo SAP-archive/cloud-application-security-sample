@@ -1,14 +1,14 @@
 # Access Limitation on Instances using Spring ACL
 
-Assume you've understood how Spring-based applications can be basically secured as explained [here](/spring-security-basis), this sample project goes one step further, demonstrating instance-based access control using access control lists (ACL) in applications based on Spring Boot and deployed on SAP Cloud Platform, Cloud Foundry (SAP CP CF).
+Assume you've understood how Spring-based applications can be basically secured as explained [here](/spring-security-basis), this sample project goes one step further, demonstrating instance-based access control using access control lists (ACL) in applications based on Spring Boot and deployed on SAP Business Technology Platform, Cloud Foundry (SAP BTP CF).
 
 ## Goal of this sample project
 
-This [Spring Boot 2.0](http://projects.spring.io/spring-boot/) demo application shows how to implement instance-based access control in Spring-based SAP Cloud Platform applications. It leverages [Spring Security ACL](https://github.com/spring-projects/spring-security) and integrates to SAP Cloud Platform XSUAA service using the [SAP Container Security Library (Java)](https://github.com/SAP/cloud-security-xsuaa-integration), which is available on [maven central](https://search.maven.org/search?q=com.sap.cloud.security).
+This [Spring Boot 2.0](http://projects.spring.io/spring-boot/) demo application shows how to implement instance-based access control in Spring-based SAP Business Technology Platform applications. It leverages [Spring Security ACL](https://github.com/spring-projects/spring-security) and integrates to SAP Business Technology Platform XSUAA service using the [SAP Container Security Library (Java)](https://github.com/SAP/cloud-security-xsuaa-integration), which is available on [maven central](https://search.maven.org/search?q=com.sap.cloud.security).
 
 Instances, you want to protect, could be **business objects** (e.g. procurement order), **data records** on the database (e.g. leave request) or any other **resource**.
 
-The microservice is adapted from the code developed in the [openSAP course: Cloud-Native Development with SAP Cloud Platform](https://open.sap.com/courses/cp5) and runs in the Cloud Foundry environment within SAP Cloud Platform.
+The microservice is adapted from the code developed in the [openSAP course: Cloud-Native Development with SAP Cloud Platform](https://open.sap.com/courses/cp5) and runs in the Cloud Foundry environment within SAP Business Technology Platform.
 
 ## Table of Contents
 This document is divided into the following sections
@@ -284,7 +284,7 @@ Execute in terminal (within project directory, which contains the `security` fol
 cf create-service postgresql v9.6-dev postgres-bulletinboard-ads
 cf create-service xsuaa application uaa-bulletinboard -c security/xs-security.json
 ```
-> Using the marketplace (`cf m`) you can see the backing services and its plans that are available on SAP CP and (!) you are entitled to use.
+> Using the marketplace (`cf m`) you can see the backing services and its plans that are available on SAP BTP and (!) you are entitled to use.
 
 ### Configure the manifest
 As a prerequisite step open the [../vars.yml](../vars.yml) file locally and replace the `ID` for example by your SAP account user name, to make the routes unique. You might want to adapt the `LANDSCAPE_APPS_DOMAIN` as well.
@@ -298,7 +298,7 @@ cf push --vars-file ../vars.yml
 
 <a id='approuterUri'></a>
 ### Create approuter route per tenant ID
-We make use of the `trial` subaccount. As you can see in the SAP CP Cockpit subaccounts have properties (see *Subaccount Details*) which of the most important one is the **Subdomain**. The Subdomain serves as the value for the technical property Tenant ID.
+We make use of the `trial` subaccount. As you can see in the SAP BTP Cockpit subaccounts have properties (see *Subaccount Details*) which of the most important one is the **Subdomain**. The Subdomain serves as the value for the technical property Tenant ID.
 
 The Tenant ID is encoded in the url, for example `https://<<your tenant>>-approuter-<<ID>>.<<LANDSCAPE_APPS_DOMAIN>>`.
 That's why we need to specify an approuter route per Tenant ID (subdomain name), e.g. `p012345trial`. For example:
@@ -309,7 +309,7 @@ cf map-route approuter <<LANDSCAPE_APPS_DOMAIN e.g. cfapps.eu10.hana.ondemand.co
 And `cf app approuter` shows another tenant-specific approuter route, which is hereinafter **also called "`approuterUri`"**.
 
 ### Cockpit administration tasks
-Go to the [SAP Cloud Platform Cloud Cockpit](https://account.hanatrial.ondemand.com/#/home/welcome)
+Go to the [SAP BTP Cockpit](https://account.hanatrial.ondemand.com/#/home/welcome)
 - Navigate to your bulletinboard-ads application. Create some Role, e.g. `ROLE_MY_TEAM_MEMBER` based on the `GroupMember` role template. And specify its attribute `group`=`UG_MY_TEAM`:
 
 ![](documentation/images/CreateRole.jpg)  

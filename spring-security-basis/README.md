@@ -1,14 +1,14 @@
 # Basic Access Limitation on Functions and Instances
 
-The following steps will explain how to secure applications in SAP Cloud Platform, Cloud Foundry (SAP CP CF) which are built based on the Spring Boot.
+The following steps will explain how to secure applications in SAP Business Technology Platform, Cloud Foundry (SAP BTP CF) which are built based on the Spring Boot.
 
 ## Goal of this sample project
 
-This [Spring Boot 2.0](http://projects.spring.io/spring-boot/) demo application shows how to implement basic access control in Spring based SAP Cloud Platform applications. It leverages [Spring Security 5.x](https://github.com/spring-projects/spring-security) and integrates to SAP Cloud Platform XSUAA service (OAuth Resource Server) using the [SAP Container Security Library (Java)](https://github.com/SAP/cloud-security-xsuaa-integration), which is available on [maven central](https://search.maven.org/search?q=com.sap.cloud.security).
+This [Spring Boot 2.0](http://projects.spring.io/spring-boot/) demo application shows how to implement basic access control in Spring based SAP Business Technology Platform applications. It leverages [Spring Security 5.x](https://github.com/spring-projects/spring-security) and integrates to SAP Business Technology Platform XSUAA service (OAuth Resource Server) using the [SAP Container Security Library (Java)](https://github.com/SAP/cloud-security-xsuaa-integration), which is available on [maven central](https://search.maven.org/search?q=com.sap.cloud.security).
 
 In order to limit access to certain instances, you can restrict the access to specific function by Roles (Scopes). Or, even more fine granular, you can restrict the access on data level so that different users can see and maintain different subsets of the data instances depending on certain user dependent attribute values.
 
-The microservice is a Spring boot version of the code developed in the [openSAP course: Cloud-Native Development with SAP Cloud Platform](https://open.sap.com/courses/cp5) and runs in the Cloud Foundry environment within SAP Cloud Platform.
+The microservice is a Spring boot version of the code developed in the [openSAP course: Cloud-Native Development with SAP Cloud Platform](https://open.sap.com/courses/cp5) and runs in the Cloud Foundry environment within SAP Business Technology Platform.
 
 > Note: The new `SAP Java Client Security Library` validates the access token, which is in JSON Web Token format, locally (offline). For verifying the signature of the access token it periodically retrieves and caches the JSON Web Keys (JWK) from the Authorization Server.
 As consequence, in order to test our Spring Boot application locally, or as part of our JUnit tests, we have to provide a Mock Web Server that mocks the `/token_keys` endpoint that returns JWKs. Thus, this sample starts and configures a Mock Web Server for the OAuth 2.0 Authorization Server as explained [here](https://github.com/spring-projects/spring-security/tree/master/samples/boot/oauth2resourceserver). The mock server is only started in case the `uaamock` Spring profile is active.
@@ -23,7 +23,7 @@ This document is divided into the following sections
 
 <a id='components'></a>	
 ## Understanding OAuth 2.0 Components	
-To better understand the content of this sample, you should have a rough understanding about the SAP CP OAuth 2.0 components that are introduced [here](/README.md#components).
+To better understand the content of this sample, you should have a rough understanding about the SAP BTP OAuth 2.0 components that are introduced [here](/README.md#components).
 
 <a id='usecases'></a>
 ## Use Cases
@@ -55,7 +55,7 @@ When Method Security is enabled ([Method Security Configuration](src/main/java/c
 There is also the option to use `hasPermission()` expressions. Then you have to explicitly configure a PermissionEvaluator in your application context. This and much more about built-in method security expressions are documented on [Spring.io documentation](https://docs.spring.io/spring-security/site/docs/current/reference/html5/#el-access).
 
 ### ABAC Use Case 2: Access Limitation on Data Level with Filter Conditions
-In addition to the functional separation you want to limit the access on data level so that different users can see and maintain different subsets of the data instances depending on certain user dependent attribute values. These attribute values can be derived from the users master data maintained in the application like cost center, organization code, department, country, location, etc. or can be set by an authorization administrator and will then be part of the user role assignment.
+In addition to the functional separation you want to limit the access on data level so that different users can see and maintain different subsets of the data instances depending on certain user dependent attribute values. These attribute values can be derived from the users main data maintained in the application like cost center, organization code, department, country, location, etc. or can be set by an authorization administrator and will then be part of the user role assignment.
 During data access by the user this authorization method automatically applies a filter in general by enhancing the WHERE condition of the SQL operation where the user attribute is compared to an attribute of the accessed data object.
 
 In our example it should be possible to restrict access to instances conditional on "confidentiality_level" classification, e.g. "Public", "Internal", "Confidential" or "Strictly confidential".
@@ -160,7 +160,7 @@ Execute in terminal (within project directory, which contains the `security` fol
 ```
 cf create-service xsuaa application uaa-bulletinboard -c security/xs-security.json
 ```
-> Using the marketplace (`cf m`) you can see the backing services and its plans that are available on SAP CP and (!) you are entitled to use.
+> Using the marketplace (`cf m`) you can see the backing services and its plans that are available on SAP BTP and (!) you are entitled to use.
 
 ### Configure the manifest
 As a prerequisite step open the [../vars.yml](../vars.yml) file locally and replace the `ID` for example by your SAP account user name, e.g. `p0123456`, to make the routes unique. You might want to adapt the `LANDSCAPE_APPS_DOMAIN` as well.
@@ -174,7 +174,7 @@ cf push --vars-file ../vars.yml
 
 <a id='approuterUri'></a>
 ### Create approuter route per tenant ID
-We make use of the `trial` subaccount. As you can see in the SAP CP Cockpit subaccounts have properties (see *Subaccount Details*) which of the most important one is the **Subdomain**. The Subdomain serves as the value for the technical property **Tenant ID**, e.g. `p0123456trial`.
+We make use of the `trial` subaccount. As you can see in the SAP BTP Cockpit subaccounts have properties (see *Subaccount Details*) which of the most important one is the **Subdomain**. The Subdomain serves as the value for the technical property **Tenant ID**, e.g. `p0123456trial`.
 
 The Tenant ID is encoded in the url, for example `https://<<your tenant ID>>-approuter-<<ID>>.<<LANDSCAPE_APPS_DOMAIN>>`.
 That's why we need to specify another route for the approuter application for each Tenant ID (subdomain name). For example:

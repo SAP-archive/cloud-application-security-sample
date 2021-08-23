@@ -68,7 +68,7 @@ We recommend to use Eclipse as the following descriptions are tailored for it.
 The developed microservices will run on the Cloud Foundry platform.
 
 - Install the Cloud Foundry Command Line Interface (CLI) following [this](https://docs.cloudfoundry.org/cf-cli/install-go-cli.html) guide
-- Create an account using this tutorial: [CF @SAP CP](https://help.cf.sap.hana.ondemand.com/). Don't forget to request your own trial space as explained there.
+- Create an account using this tutorial: [CF @SAP BTP](https://help.cf.sap.hana.ondemand.com/). Don't forget to request your own trial space as explained there.
 
 <a id="headline-2.7"></a>
 ### Docker
