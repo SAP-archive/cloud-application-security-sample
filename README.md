@@ -3,16 +3,16 @@
 # Cloud Application Security Samples
 
 ## Description
-Implementing security in SAP Cloud Platform Applications?  
-The SAP Cloud Platform offers specific support to implement authentication and authorization for business users that access SAP Cloud Platform applications. As a developer of such applications you have different options how to leverage the possibilities that SAP Cloud Platform offers. In this repository we want to showcase how this can be done. These samples demonstrate several different technologies to implement security authentication and authorization. Specifically, they integrate to SAP Cloud Platform XSUAA service using one of SAP's Container Security Libraries.
+Implementing security in SAP BTP Applications?  
+The SAP BTP offers specific support to implement authentication and authorization for business users that access SAP BTP applications. As a developer of such applications you have different options how to leverage the possibilities that SAP BTP offers. In this repository we want to showcase how this can be done. These samples demonstrate several different technologies to implement security authentication and authorization. Specifically, they integrate to SAP BTP XSUAA service using one of SAP's Container Security Libraries.
 
 ## Overview of Samples
 Each sample is provided in a separate module.
 
 Module | Description | Availability | Prerequisite
 ---- | -------- | ---- | ---
-[spring-security-basis](spring-security-basis) | This module shows how to implement basic access control in Spring-based SAP Cloud Platform applications. It leverages Spring Security 5.x and integrates to SAP Cloud Platform XSUAA service (OAuth Resource Server) using the SAP Container Security Library (Java), which is available on maven central. Furthermore the sample demonstrates a multi-tenancy setup and how to implement JUnit tests. | 2019-06 | [openSAP course: Cloud-Native Development with SAP CP](https://open.sap.com/courses/cp5) - Week 5
-[spring-security-acl](spring-security-acl) | This module shows the usage of Spring Security ACL to implement instance-based access control in Spring-based SAP Cloud Platform applications. Furthermore the sample demonstrates a multi-tenancy setup and how to implement JUnit tests. | 2019-01 | Module: [spring-security-basis](spring-security-basis) 
+[spring-security-basis](spring-security-basis) | This module shows how to implement basic access control in Spring-based SAP BTP applications. It leverages Spring Security 5.x and integrates to SAP BTP XSUAA service (OAuth Resource Server) using the SAP Container Security Library (Java), which is available on maven central. Furthermore the sample demonstrates a multi-tenancy setup and how to implement JUnit tests. | 2019-06 | [openSAP course: Cloud-Native Development with SAP CP](https://open.sap.com/courses/cp5) - Week 5
+[spring-security-acl](spring-security-acl) | This module shows the usage of Spring Security ACL to implement instance-based access control in Spring-based SAP BTP applications. Furthermore the sample demonstrates a multi-tenancy setup and how to implement JUnit tests. | 2019-01 | Module: [spring-security-basis](spring-security-basis) 
 
    
 <a id='components'></a>

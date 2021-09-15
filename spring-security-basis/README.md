@@ -8,7 +8,7 @@ This [Spring Boot 2.0](http://projects.spring.io/spring-boot/) demo application 
 
 In order to limit access to certain instances, you can restrict the access to specific function by Roles (Scopes). Or, even more fine granular, you can restrict the access on data level so that different users can see and maintain different subsets of the data instances depending on certain user dependent attribute values.
 
-The microservice is a Spring boot version of the code developed in the [openSAP course: Cloud-Native Development with SAP Cloud Platform](https://open.sap.com/courses/cp5) and runs in the Cloud Foundry environment within SAP Business Technology Platform.
+The microservice is a Spring boot version of the code developed in the [openSAP course: Cloud-Native Development with SAP CP](https://open.sap.com/courses/cp5) and runs in the Cloud Foundry environment within SAP Business Technology Platform.
 
 > Note: The new `SAP Java Client Security Library` validates the access token, which is in JSON Web Token format, locally (offline). For verifying the signature of the access token it periodically retrieves and caches the JSON Web Keys (JWK) from the Authorization Server.
 As consequence, in order to test our Spring Boot application locally, or as part of our JUnit tests, we have to provide a Mock Web Server that mocks the `/token_keys` endpoint that returns JWKs. Thus, this sample starts and configures a Mock Web Server for the OAuth 2.0 Authorization Server as explained [here](https://github.com/spring-projects/spring-security/tree/main/samples/boot/oauth2resourceserver). The mock server is only started in case the `uaamock` Spring profile is active.
@@ -233,7 +233,7 @@ Call again your application endpoints via the approuter Uri using the `Postman` 
 ***
 
 # <a name="furtherReading"></a>Further References
-- [openSAP course: Cloud-Native Development with SAP Cloud Platform](https://open.sap.com/courses/cp5)
+- [openSAP course: Cloud-Native Development with SAP CP](https://open.sap.com/courses/cp5)
 - [Baeldung tutorial: A Custom Security Expression with Spring Security](https://www.baeldung.com/spring-security-create-new-custom-security-expression)
 - [Spring Security Mock Authorization Server for providing token keys](https://github.com/spring-projects/spring-security/tree/main/samples/boot/oauth2resourceserver)
 - [Spring Security Docs: Expression-Based Access Control](https://docs.spring.io/spring-security/site/docs/current/reference/html/el-access.html)

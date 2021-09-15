@@ -7,7 +7,7 @@
     <packaging>jar</packaging>
 
     <name>demo-application-security-basis</name>
-    <description>Demo project for Spring Boot using Spring Security. It integrates to SAP Cloud Platform XSUAA service
+    <description>Demo project for Spring Boot using Spring Security. It integrates to SAP BTP XSUAA service
         using the Java Client Security Library offered by SAP.
     </description>
 

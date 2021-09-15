@@ -8,7 +8,7 @@ This [Spring Boot 2.0](http://projects.spring.io/spring-boot/) demo application 
 
 Instances, you want to protect, could be **business objects** (e.g. procurement order), **data records** on the database (e.g. leave request) or any other **resource**.
 
-The microservice is adapted from the code developed in the [openSAP course: Cloud-Native Development with SAP Cloud Platform](https://open.sap.com/courses/cp5) and runs in the Cloud Foundry environment within SAP Business Technology Platform.
+The microservice is adapted from the code developed in the [openSAP course: Cloud-Native Development with SAP CP](https://open.sap.com/courses/cp5) and runs in the Cloud Foundry environment within SAP Business Technology Platform.
 
 ## Table of Contents
 This document is divided into the following sections
@@ -432,5 +432,5 @@ For the PUT-request `/api/v1/ads/acl/grantPermissionsToUser/{advertisementId}` t
 - [Github: SAP Container Security Library (Java)](https://github.com/SAP/cloud-security-xsuaa-integration)
 - [Spring.io: Domain Object Security (ACLs)](https://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#domain-acls)
 - [Spring.io: ACL database schema](https://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#dbschema-acl)
-- [openSAP course: Cloud-Native Development with SAP Cloud Platform](https://open.sap.com/courses/cp5)
+- [openSAP course: Cloud-Native Development with SAP CP](https://open.sap.com/courses/cp5)
 - [Baeldung tutorial: Introduction to Spring Security ACL](https://www.baeldung.com/spring-security-acl)
