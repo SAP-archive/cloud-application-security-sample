@@ -17,7 +17,7 @@ Module | Description | Availability | Prerequisite
    
 <a id='components'></a>
 ## Understanding OAuth 2.0 Components
-To better understand the content of this repository, you should gain a rough understanding about the SAP CP OAuth 2.0 components, which are depicted in figure below.
+To better understand the content of this repository, you should gain a rough understanding about the SAP BTP OAuth 2.0 components, which are depicted in figure below.
 
 ![](images/Figure_OAuth2.0_SAP_CP_Components.png)
 
